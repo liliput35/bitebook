@@ -154,53 +154,53 @@ Follow these steps to set up the BiteBook project on your local machine.
 
 ### 🔽 1. Clone the Repository
 
-git clone https://github.com/liliput35/bitebook.git
+`git clone https://github.com/liliput35/bitebook.git`
 
 ### 📂 2. Navigate to the Project Folder
 
-cd bitebook
+`cd bitebook`
 
 ### 🌿 3. Checkout the Develop Branch
 
 ⚠️ Always work on develop, NOT main
 
-git checkout develop
+`git checkout develop`
 
 If develop does not exist locally yet:
 
-git checkout -b develop origin/develop
+`git checkout -b develop origin/develop`
 
 ### 📦 4. Install Dependencies (Laravel)
 
-composer install
+`composer install`
 
 ### ⚙️ 5. Setup Environment File
 
-cp .env.example .env
+`cp .env.example .env`
 
 Then generate app key:
 
-php artisan key:generate
+`php artisan key:generate`
 
 ### 🗄️ 6. Configure Database
 
 Edit .env file and set your database:
 
-DB_DATABASE=bitebook
-DB_USERNAME=root
-DB_PASSWORD=
+`DB_DATABASE=bitebook`
+`DB_USERNAME=root`
+`DB_PASSWORD=`
 
 ### 🧱 7. Run Migrations
 
-php artisan migrate
+`php artisan migrate`
 
 (Optional: seed sample data)
 
-php artisan db:seed
+`php artisan db:seed`
 
 ### ▶️ 8. Run the Application
 
-php artisan serve
+`php artisan serve`
 
 Open in browser:
 
@@ -232,18 +232,18 @@ Each team member is assigned specific features:
 
 ### 1. Start from `develop`
 
-git checkout develop
-git pull origin develop
+`git checkout develop`
+`git pull origin develop`
 
 
 ### 2. Create a Feature Branch
 
-git checkout -b feature/your-feature-name
+`git checkout -b feature/your-feature-name`
 
 ### 3. Work and Commit Changes 
 
-git add .
-git commit -m "Add: short description of feature" 
+`git add .`
+`git commit -m "Add: short description of feature" `
 
 * Add: New feature
 * Fix: Bug fix
@@ -251,7 +251,7 @@ git commit -m "Add: short description of feature"
 
 ### 4. Push Feature Branch 
 
-git push origin feature/your-feature-name
+`git push origin feature/your-feature-name`
 
 ### 5. Create Pull Request (PR)
 
