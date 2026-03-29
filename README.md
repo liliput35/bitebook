@@ -187,7 +187,7 @@ Then generate app key:
 
 Edit .env file and set your database:
 
-`DB_DATABASE=bitebook`
+`DB_DATABASE=bitebook_db`
 `DB_USERNAME=root`
 `DB_PASSWORD=`
 
