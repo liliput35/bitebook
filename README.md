@@ -146,7 +146,7 @@ This document outlines the Git workflow used for the development of **BiteBook: 
 
 ---
 
-## 💻 Cloning the Repository (Team Setup Guide)
+## 💻 Cloning the Repository (Team Setup Guide) ONE TIME USE
 
 Follow these steps to set up the BiteBook project on your local machine.
 
@@ -170,9 +170,10 @@ If develop does not exist locally yet:
 
 `git checkout -b develop origin/develop`
 
-### 📦 4. Install Dependencies (Laravel)
+### 📦 4. Install Dependencies (Laravel & Tailwind)
 
 `composer install`
+`npm install`
 
 ### ⚙️ 5. Setup Environment File
 
@@ -198,7 +199,13 @@ Edit .env file and set your database:
 
 `php artisan db:seed`
 
-### ▶️ 8. Run the Application
+### ▶️ 8. Run the Tailwind Compiler
+
+`npm run dev`
+
+### ▶️ 9. Run the Application
+
+Open another terminal and run: 
 
 `php artisan serve`
 
