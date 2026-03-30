@@ -6,7 +6,7 @@
     <title>@yield('title', 'BiteBook')</title>
     @vite('resources/css/app.css')
 </head>
-<body>
+<body class="font-aeonik bg-background text-biteblack">
 
 
 
