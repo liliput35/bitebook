@@ -20,7 +20,7 @@
     </div>
 
 
-    <div class="w-4/5 mx-auto mt-[30%] md:w-1/2 md:mt-[10%] lg:mx-0 lg:mt-0 lg:w-[40%]">
+    <div class="w-4/5 mx-auto mt-[30%] md:w-1/2 md:mt-[10%] lg:mx-0 lg:mt-0 lg:w-[40%] xl:w-[30%]">
         <h2 class="text-[2em] font-bold">Create an Account</h2>
         <p class="text-[1.25em] text-dark-green">You are moments away from getting started!</p>
 
