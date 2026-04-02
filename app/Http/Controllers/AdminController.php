@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MenuItem;  
+use App\Models\Category;
+
 class AdminController extends Controller
 {
     public function dashboard()
@@ -11,7 +14,9 @@ class AdminController extends Controller
 
     public function menu()
     {
-        return view('admin.menu');
+        $menuItems  = MenuItem::with('category')->get();
+        $categories = Category::all();
+        return view('admin.menu', compact('menuItems', 'categories'));
     }
 
     public function inquiries()
