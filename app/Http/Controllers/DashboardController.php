@@ -14,6 +14,6 @@ class DashboardController extends Controller
             return redirect('/admin/dashboard');
         }
 
-        return view('user.dashboard'); // for future
+        return view('user.dashboard'); 
     }
 }
