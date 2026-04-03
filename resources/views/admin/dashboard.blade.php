@@ -1,17 +1,24 @@
-@extends('layouts.content')
+@extends('layouts.admin_pages')
 
 @section('title', 'Dashboard')
 
-@section('content')
+@section('admin_pages')
 
 <div class="bg-dark-green py-4 flex justify-center lg:hidden">
     <img src="{{asset('images/logo.png')}}" alt="" class="max-w-[85px]">
 </div>
 
-<div class="w-[90%] mx-auto">
+<div class="w-[90%] mx-auto lg:min-h-[100vh]">
 
-    <h1 class="text-[2em] font-bold mt-6 lg:text-[2.5em]">Welcome back, Chef</h1>
-    <p class="text-dark-gray text-lg leading-none lg:text-[1.5em]">Here is what's simmering in your kitchen today.</p>
+
+    <div class="lg:flex lg:justify-between lg:items-center">
+        <div class="">
+            <h1 class="text-[2em] font-bold mt-6 lg:text-[2.5em]">Welcome back, Chef</h1>
+            <p class="text-dark-gray text-lg leading-none lg:text-[1.5em]">Here is what's simmering in your kitchen today.</p>
+        </div>
+
+        <a href="" class="py-2 px-6 bg-light-green text-background rounded-lg hidden lg:block">+ New Booking</a>
+    </div>
     
     <!-- dashboard misc info -->
     <div class="bg-white shadow-lg p-4 rounded-lg mt-4 lg:bg-background lg:shadow-none lg:flex lg:justify-between lg:gap-6">
@@ -220,16 +227,7 @@
         </div> 
     </div>
     
-
-
-    <form method="POST" action="{{ route('logout') }}">
-        @csrf
-        <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-md mt-8">
-            Logout
-        </button>
-    </form>
 </div>
 
-@include('layouts.admin_navbar') 
 
 @endsection
