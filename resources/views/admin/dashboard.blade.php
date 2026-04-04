@@ -33,7 +33,7 @@
             <div class="w-full flex justify-between">
                 <div class="">
                     <h4 class="text-light-gray font-medium leading-none text-[1em]">TOTAL REVENUE</h4>
-                    <p class="font-medium text-[1.5em]">P0000.00</p>
+                    <p class="font-medium text-[1.5em]">₱{{ number_format($totalRevenue) }}</p>
                 </div>
 
                 <p class="font-medium text-light-green lg:hidden">+12%</p>
@@ -49,7 +49,7 @@
             <div class="w-full flex justify-between">
                 <div class="">
                     <h4 class="text-light-gray font-medium leading-none text-[1em]">NEW INQUIRIES</h4>
-                    <p class="font-medium text-[1.5em]">8</p>
+                    <p class="font-medium text-[1.5em]">{{ $newInquiries }}</p>
                 </div>
 
                 <p class="font-medium text-light-green lg:hidden"></p>
@@ -65,7 +65,7 @@
             <div class="w-full flex justify-between">
                 <div class="">
                     <h4 class="text-light-gray font-medium leading-none text-[1em]">UPCOMING BOOKINGS</h4>
-                    <p class="font-medium text-[1.5em]">16</p>
+                    <p class="font-medium text-[1.5em]">{{ $upcomingBookings }}</p>
                 </div>
 
                 <p class="font-medium text-light-green lg:hidden">This Month</p>

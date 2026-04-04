@@ -9,6 +9,9 @@ use App\Models\Category;
 use App\Models\MenuItem;
 use App\Models\Bundle;
 use App\Models\BundleRequirement;
+use App\Models\Booking;
+use App\Models\Inquiry;
+use Carbon\Carbon;
 
 class DatabaseSeeder extends Seeder
 {
@@ -20,6 +23,14 @@ class DatabaseSeeder extends Seeder
             'username' => 'admin',
             'password' => Hash::make('123456'),
             'role' => 'admin',
+        ]);
+
+        //USER Lorenz 123456 
+        User::create([
+            'name' => 'Lorenz Ciocon',
+            'username' => 'lorenz',
+            'password' => Hash::make('123456'),
+            'role' => 'user',
         ]);
 
 
@@ -131,6 +142,35 @@ class DatabaseSeeder extends Seeder
             'bundle_id' => $bundle->id,
             'category_id' => $categoryMap['Dessert'],
             'required_quantity' => 1
+        ]);
+
+
+        $user = User::offset(1)->first();
+
+        //BOOKINGS
+        Booking::create([
+            'user_id' => $user->id,
+            'event_date' => Carbon::now()->addDays(3),
+            'guest_count' => 100,
+            'status' => 'confirmed',
+            'total_price' => 60000,
+            'bundle_id' => 1,
+        ]);
+
+        Booking::create([
+            'user_id' => $user->id,
+            'event_date' => Carbon::now()->addDays(7),
+            'guest_count' => 50,
+            'status' => 'pending',
+            'total_price' => 30000,
+            'bundle_id' => 1,
+        ]);
+
+        Inquiry::create([
+            'booking_id' => 1,
+            'sender_id' => $user->id,
+            'message' => 'Can we adjust the menu?',
+            'status' => 'new',
         ]);
     }
 }
