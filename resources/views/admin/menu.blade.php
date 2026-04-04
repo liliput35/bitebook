@@ -78,6 +78,9 @@
                 @endif
             </td>
             <td>
+                <a href="{{ route('admin.menu.edit', $item->id) }}">
+                    <button type="button">Edit</button>
+                </a>
                 <form action="{{ route('admin.menu.destroy', $item->id) }}" method="POST"
                       onsubmit="return confirm('Delete this item?')">
                     @csrf
