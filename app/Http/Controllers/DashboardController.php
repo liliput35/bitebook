@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Models\Booking;
 use App\Models\Inquiry;
 use App\Models\MenuItem;
@@ -30,21 +31,32 @@ class DashboardController extends Controller
         $bookingsThisWeek = Booking::whereBetween('event_date', [
             Carbon::now()->startOfWeek(),
             Carbon::now()->endOfWeek()
-        ])->count();
+        ])
+        ->orderBy('event_date', 'asc') // upcoming first
+        ->take(3)
+        ->get(); 
 
-        /* Most Popular Item (based on booking_items)
-        $mostPopularItem = \DB::table('booking_items')
-            ->select('menu_item_id', \DB::raw('SUM(quantity) as total'))
+        //DEBUG PURPOSES
+        //$bookingsThisWeek = Booking::all();
+
+        /* Most Popular Item (based on booking_items) */
+        $mostPopular = DB::table('booking_items')
+            ->select('menu_item_id', DB::raw('SUM(quantity) as total_quantity'))
             ->groupBy('menu_item_id')
-            ->orderByDesc('total')
+            ->orderByDesc('total_quantity')
             ->first();
 
-        $popularItemName = null;
+        $mostPopularItem = null;
 
-        if ($mostPopularItem) {
-            $item = MenuItem::find($mostPopularItem->menu_item_id);
-            $popularItemName = $item ? $item->name : null;
-        } */
+        if ($mostPopular) {
+            $mostPopularItem = \App\Models\MenuItem::find($mostPopular->menu_item_id);
+        } 
+
+        //RECENT INQUIRIES 
+        $recentInquiries = Inquiry::with(['booking', 'sender'])
+        ->latest() // newest first (based on created_at)
+        ->take(5)
+        ->get();
 
         // Admin dashboard
         if ($user->role === 'admin') {
@@ -53,7 +65,9 @@ class DashboardController extends Controller
                 'recentBookings',
                 'newInquiries',
                 'upcomingBookings',
-                'bookingsThisWeek'
+                'bookingsThisWeek', 
+                'mostPopularItem', 
+                'recentInquiries' 
             ));
         }
 

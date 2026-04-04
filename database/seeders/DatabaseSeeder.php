@@ -10,6 +10,7 @@ use App\Models\MenuItem;
 use App\Models\Bundle;
 use App\Models\BundleRequirement;
 use App\Models\Booking;
+use App\Models\BookingItem;
 use App\Models\Inquiry;
 use Carbon\Carbon;
 
@@ -150,7 +151,8 @@ class DatabaseSeeder extends Seeder
         //BOOKINGS
         Booking::create([
             'user_id' => $user->id,
-            'event_date' => Carbon::now()->addDays(3),
+            'event_type' => 'Wedding Reception',
+            'event_date' => Carbon::now()->addDays(2),
             'guest_count' => 100,
             'status' => 'confirmed',
             'total_price' => 60000,
@@ -159,7 +161,8 @@ class DatabaseSeeder extends Seeder
 
         Booking::create([
             'user_id' => $user->id,
-            'event_date' => Carbon::now()->addDays(7),
+            'event_type' => 'Family Reunion',
+            'event_date' => Carbon::now()->addDays(10),
             'guest_count' => 50,
             'status' => 'pending',
             'total_price' => 30000,
@@ -171,6 +174,53 @@ class DatabaseSeeder extends Seeder
             'sender_id' => $user->id,
             'message' => 'Can we adjust the menu?',
             'status' => 'new',
-        ]);
+        ]); 
+
+        Inquiry::create([
+            'booking_id' => 1,
+            'sender_id' => $user->id,
+            'message' => 'Hehe added guests',
+            'status' => 'responded',
+        ]); 
+
+        Inquiry::create([
+            'booking_id' => 2,
+            'sender_id' => $user->id,
+            'message' => 'Allergy concerns',
+            'status' => 'confirmed',
+        ]); 
+
+        Inquiry::create([
+            'booking_id' => 1,
+            'sender_id' => $user->id,
+            'message' => 'Here comes the bride',
+            'status' => 'responded',
+        ]); 
+
+        Inquiry::create([
+            'booking_id' => 2,
+            'sender_id' => $user->id,
+            'message' => 'What',
+            'status' => 'new',
+        ]); 
+
+        //BOOKING ITEMS 
+        $menuItems = MenuItem::all();
+        $bookings = Booking::all();
+
+        foreach ($bookings as $booking) {
+
+            // Each booking gets 2–3 random items
+            $items = $menuItems->random(rand(2, 3));
+
+            foreach ($items as $item) {
+                BookingItem::create([
+                    'booking_id' => $booking->id,
+                    'menu_item_id' => $item->id,
+                    'quantity' => rand(1, 5),
+                    'price' => $item->price,
+                ]);
+            }
+        }
     }
 }
