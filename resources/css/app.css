@@ -1,3 +1,4 @@
+
 @font-face {
     font-family: 'Aeonik';
     src: url('../fonts/Aeonik-Bold.ttf') format('truetype');
@@ -29,6 +30,25 @@
     font-style: normal;
     font-display: swap;
 }
+
+@layer components {
+    .status-pill {
+        @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-bold font-aeonik uppercase tracking-wider;
+    }
+
+    .status-confirmed {
+        @apply bg-green-100 text-green-700 ;
+    }
+
+    .status-responded {
+        @apply bg-violet-100 text-violet-700 ;
+    }
+
+    .status-new {
+        @apply bg-red-100 text-red-700 ;
+    }
+}
+
 
 @tailwind base;
 @tailwind components;
