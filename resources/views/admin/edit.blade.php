@@ -4,7 +4,7 @@
 
 @section('content')
 <h1 class="text-2xl font-bold">Edit Menu Item</h1>
-@include('layouts.navbar')
+@include('layouts.admin_navbar')
 
 @if($errors->any())
     <ul>
