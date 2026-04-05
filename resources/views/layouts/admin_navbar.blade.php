@@ -3,8 +3,8 @@
     <img src="{{asset('images/logo-green.png')}}" alt="" class="max-w-[100px]">
 
     <div class="flex justify-between items-center font-medium text-dark-gray text-[1.25em] gap-[2.5em]">
-        <a href="">Dashboard</a>
-        <a href="">Management</a>
+        <a href="{{ route('admin.dashboard') }}">Dashboard</a>
+        <a href="{{ route('admin.management') }}">Management</a>
         <a href="">Inquiry</a>
         <a href="">Booking</a>
     </div> 
@@ -16,6 +16,6 @@
 
 <div class="navbar bg-dark-green text-white flex items-center justify-between w-[90%] py-2 px-4 rounded-full fixed bottom-[1em] left-0 right-0 mx-auto lg:hidden">
     <a href="{{ route('admin.dashboard') }}">Dashboard</a>
-    <a href="{{ route('admin.menu') }}">Menu</a>
+    <a href="{{ route('admin.management') }}">Management</a>
     <a href="{{ route('admin.inquiries') }}">Inquiry</a>
 </div>

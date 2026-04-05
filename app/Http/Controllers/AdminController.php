@@ -71,8 +71,17 @@ class AdminController extends Controller
     public function menu()
     {
         $menuItems  = MenuItem::with('category')->get();
+        $totalMenuItems = MenuItem::all()->count() ;
         $categories = Category::all();
-        return view('admin.menu', compact('menuItems', 'categories'));
+        return view('admin.menu', compact('totalMenuItems','menuItems', 'categories'));
+    }
+
+    public function management()
+    {
+        $totalMenuItems = MenuItem::all()->count() ;
+        $menuItems  = MenuItem::with('category')->take(4)->get();
+        $categories = Category::all();
+        return view('admin.management', compact('totalMenuItems', 'menuItems', 'categories'));
     }
 
     public function inquiries()

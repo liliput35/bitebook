@@ -43,6 +43,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 
     Route::get('/menu', [AdminController::class, 'menu'])->name('admin.menu');
 
+    Route::get('/management', [AdminController::class, 'management'])->name('admin.management');
+
+    Route::get('/addmenu', [MenuItemController::class, 'index'])->name('admin.management.addmenu');
+
     Route::get('/inquiries', [AdminController::class, 'inquiries'])->name('admin.inquiries');
 
     // Menu Item
