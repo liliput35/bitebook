@@ -45,6 +45,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 
     Route::get('/inquiries', [AdminController::class, 'inquiries'])->name('admin.inquiries');
 
+    // Menu Item
     Route::post('/menu', [MenuItemController::class, 'store'])->name('admin.menu.store');
     Route::delete('/menu/{menuItem}', [MenuItemController::class, 'destroy'])->name('admin.menu.destroy');
+
+    // Santi
+    Route::get('/menu/{menuItem}/edit', [MenuItemController::class, 'edit'])->name('admin.menu.edit');
+    Route::put('/menu/{menuItem}', [MenuItemController::class, 'update'])->name('admin.menu.update');
 });
