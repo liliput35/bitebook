@@ -5,7 +5,7 @@
     <div class="flex justify-between items-center font-medium text-dark-gray text-[1.25em] gap-[2.5em]">
         <a href="{{ route('admin.dashboard') }}">Dashboard</a>
         <a href="{{ route('admin.management') }}">Management</a>
-        <a href="">Inquiry</a>
+        <a href="{{ route('admin.inquiries') }}">Inquiry</a>
         <a href="">Booking</a>
     </div> 
 

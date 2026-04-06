@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\MenuItemController;
 use App\Http\Controllers\BundleController;
+use App\Http\Controllers\InquiryController;
 
 // Home route redirects
 Route::get('/', function () {
@@ -52,7 +53,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 
     Route::get('/addbundle', [BundleController::class, 'create'])->name('admin.management.addbundle');
 
-    Route::get('/inquiries', [AdminController::class, 'inquiries'])->name('admin.inquiries');
 
     // Menu Item
     Route::post('/menu', [MenuItemController::class, 'store'])->name('admin.menu.store');
@@ -66,6 +66,15 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::post('/bundles', [BundleController::class, 'store'])->name('admin.bundles.store');
     Route::get('/bundles/{bundle}/edit', [BundleController::class, 'edit'])->name('admin.bundles.edit');
     Route::put('/bundles/{bundle}', [BundleController::class, 'update'])->name('admin.bundles.update');
-    Route::delete('/bundles/{bundle}', [BundleController::class, 'destroy'])->name('admin.bundles.destroy');
+    Route::delete('/bundles/{bundle}', [BundleController::class, 'destroy'])->name('admin.bundles.destroy'); 
+
+    //INQUIRIES
+    // Admin view (list + optional selected inquiry)
+    Route::get('/inquiries/{id?}', [AdminController::class, 'inquiries'])
+    ->name('admin.inquiries');
+
+    Route::post('/inquiries', [InquiryController::class, 'store'])->name('inquiries.store');
+    Route::post('/inquiries/{id}/reply', [InquiryController::class, 'reply'])->name('inquiries.reply');
+    Route::delete('/inquiries/{id}', [InquiryController::class, 'destroy'])->name('inquiries.delete');
 
 });

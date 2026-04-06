@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('booking_id')->constrained()->cascadeOnDelete();
             $table->foreignId('sender_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('parent_id')->nullable()->constrained('inquiries')->cascadeOnDelete();
             $table->text('message');
             $table->string('status')->default('new'); // new, responded, confirmed
             $table->timestamps();
