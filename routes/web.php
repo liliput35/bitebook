@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\MenuItemController;
+use App\Http\Controllers\BundleController;
 
 // Home route redirects
 Route::get('/', function () {
@@ -43,9 +44,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 
     Route::get('/menu', [AdminController::class, 'menu'])->name('admin.menu');
 
+    Route::get('/bundles', [AdminController::class, 'bundles'])->name('admin.bundles');
+
     Route::get('/management', [AdminController::class, 'management'])->name('admin.management');
 
     Route::get('/addmenu', [MenuItemController::class, 'index'])->name('admin.management.addmenu');
+
+    Route::get('/addbundle', [BundleController::class, 'create'])->name('admin.management.addbundle');
 
     Route::get('/inquiries', [AdminController::class, 'inquiries'])->name('admin.inquiries');
 
@@ -56,4 +61,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     // Santi
     Route::get('/menu/{menuItem}/edit', [MenuItemController::class, 'edit'])->name('admin.menu.edit');
     Route::put('/menu/{menuItem}', [MenuItemController::class, 'update'])->name('admin.menu.update');
+
+    //BUNDLES 
+    Route::post('/bundles', [BundleController::class, 'store'])->name('admin.bundles.store');
+    Route::get('/bundles/{bundle}/edit', [BundleController::class, 'edit'])->name('admin.bundles.edit');
+    Route::put('/bundles/{bundle}', [BundleController::class, 'update'])->name('admin.bundles.update');
+    Route::delete('/bundles/{bundle}', [BundleController::class, 'destroy'])->name('admin.bundles.destroy');
+
 });

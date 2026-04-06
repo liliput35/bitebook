@@ -7,6 +7,7 @@ use App\Models\Category;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Booking;
+use App\Models\Bundle;
 use App\Models\Inquiry;
 use Carbon\Carbon;
 
@@ -76,12 +77,21 @@ class AdminController extends Controller
         return view('admin.menu', compact('totalMenuItems','menuItems', 'categories'));
     }
 
+    public function bundles()
+    {
+        $bundles  = Bundle::all();
+        $totalBundles = Bundle::all()->count() ;
+        return view('admin.bundles', compact('bundles', 'totalBundles'));
+    }
+
     public function management()
     {
         $totalMenuItems = MenuItem::all()->count() ;
         $menuItems  = MenuItem::with('category')->take(4)->get();
         $categories = Category::all();
-        return view('admin.management', compact('totalMenuItems', 'menuItems', 'categories'));
+        $bundles  = Bundle::all();
+        $totalBundles = Bundle::all()->count() ;
+        return view('admin.management', compact('totalMenuItems', 'menuItems', 'categories', 'bundles', 'totalBundles'));
     }
 
     public function inquiries()
