@@ -2,4 +2,5 @@
 
 <main>
     @yield('content')
-</main>
+</main> 
+

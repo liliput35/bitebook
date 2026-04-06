@@ -34,7 +34,7 @@
             <div class="w-full flex justify-between">
                 <div class="">
                     <h4 class="text-light-gray font-medium leading-none text-[1em]">TOTAL BUNDLES CREATED</h4>
-                    <p class="font-medium text-[1.5em]">8</p>
+                    <p class="font-medium text-[1.5em]">{{$totalBundles}}</p>
                 </div>
             </div>
 
@@ -77,64 +77,27 @@
 
     <div class="flex justify-between items-end border-b border-dark-gray pb-2 mb-6">
         <h1 class="text-[2em] font-medium mt-6 lg:text-[2.5em] ">Bundles</h1>
-        <a href="" class="text-dark-green font-medium">View All</a>
+        <a href="{{ route('admin.bundles') }}" class="text-dark-green font-medium">View All</a>
     </div>
 
     <div class="items-container lg:grid lg:grid-cols-4 lg:gap-5">
 
+        @forelse($bundles as $bundle)
         <div class="item mb-6 bg-white rounded-xl shadow-lg overflow-hidden pb-4">
             <div class="top-row h-[250px] bg-red-300">
             </div>
             <div class="bot-row px-4">
-                <h4 class="font-medium text-[1.5em] my-1">Classic Wedding Reception</h4>
-                <p class="font-medium text-dark-green mb-1 text-[1.25em]">P 600.00/head</p>
-                <p class="mb-4">Standard full course meal...</p>
+                <h4 class="font-medium text-[1.5em] my-1">{{ $bundle->name }}</h4>
+                <p class="font-medium text-dark-green mb-1 text-[1.25em]">P {{ $bundle->price_per_head }}/head</p>
+                <p class="mb-4">{{ $bundle->description }}</p>
                 <div class="flex justify-end">
-                    <a href="" class=""><img src="{{asset('images/inquiries-icon.png')}}" alt=""></a>
+                    <a href="{{ route('admin.bundles.edit', $bundle->id) }}" class=""><img src="{{asset('images/edit-icon.png')}}" alt="" class="max-w-[40px]"></a>
                 </div>
             </div>
         </div>
-
-        <div class="item mb-6 bg-white rounded-xl shadow-lg overflow-hidden pb-4">
-            <div class="top-row h-[250px] bg-red-300">
-            </div>
-            <div class="bot-row px-4">
-                <h4 class="font-medium text-[1.5em] my-1">Classic Wedding Reception</h4>
-                <p class="font-medium text-dark-green mb-1 text-[1.25em]">P 600.00/head</p>
-                <p class="mb-4">Standard full course meal...</p>
-                <div class="flex justify-end">
-                    <a href="" class=""><img src="{{asset('images/inquiries-icon.png')}}" alt=""></a>
-                </div>
-            </div>
-        </div>
-
-        <div class="item mb-6 bg-white rounded-xl shadow-lg overflow-hidden pb-4">
-            <div class="top-row h-[250px] bg-red-300">
-            </div>
-            <div class="bot-row px-4">
-                <h4 class="font-medium text-[1.5em] my-1">Classic Wedding Reception</h4>
-                <p class="font-medium text-dark-green mb-1 text-[1.25em]">P 600.00/head</p>
-                <p class="mb-4">Standard full course meal...</p>
-                <div class="flex justify-end">
-                    <a href="" class=""><img src="{{asset('images/inquiries-icon.png')}}" alt=""></a>
-                </div>
-            </div>
-        </div>
-
-        <div class="item mb-6 bg-white rounded-xl shadow-lg overflow-hidden pb-4">
-            <div class="top-row h-[250px] bg-red-300">
-            </div>
-            <div class="bot-row px-4">
-                <h4 class="font-medium text-[1.5em] my-1">Classic Wedding Reception</h4>
-                <p class="font-medium text-dark-green mb-1 text-[1.25em]">P 600.00/head</p>
-                <p class="mb-4">Standard full course meal...</p>
-                <div class="flex justify-end">
-                    <a href="" class=""><img src="{{asset('images/inquiries-icon.png')}}" alt=""></a>
-                </div>
-            </div>
-        </div>
-
-       
+        @empty 
+        <p class="text-center">No bundles yet.</p>
+        @endforelse
 
     </div>
 
