@@ -29,7 +29,7 @@
                 <p class="font-medium text-dark-green mb-1 text-[1.25em]">P {{ $item->price }}</p>
                 <p class="mb-4">{{ $item->description }}</p>
                 <div class="flex justify-end">
-                    <a href="{{ route('admin.menu.edit', $item->id) }}" class=""><img src="{{asset('images/add-icon.png')}}" alt="" class="max-w-[40px]"></a>
+                    <a href="{{ route('user.menu.item', $item->id) }}" class=""><img src="{{asset('images/add-icon.png')}}" alt="" class="max-w-[40px]"></a>
                 </div>
             </div>
         </div>
