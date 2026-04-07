@@ -27,7 +27,7 @@ class InquiryController extends Controller
             'booking_id' => $request->booking_id,
             'sender_id' => Auth::id(),
             'message' => $request->message,
-            'status' => 'open',
+            'status' => 'new',
             'parent_id' => null,
         ]);
 
@@ -50,6 +50,14 @@ class InquiryController extends Controller
             'status' => 'open',
             'parent_id' => $parent->id,
         ]);
+
+        if (Auth::user()->role === 'admin') {
+            $parent->status = 'responded';
+        } else {
+            $parent->status = 'new';
+        }
+
+        $parent->save();
 
         return back()->with('success', 'Reply sent');
     }

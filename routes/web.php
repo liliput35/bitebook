@@ -77,4 +77,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::post('/inquiries/{id}/reply', [InquiryController::class, 'reply'])->name('inquiries.reply');
     Route::delete('/inquiries/{id}', [InquiryController::class, 'destroy'])->name('inquiries.delete');
 
+    //BOOKINGS 
+    Route::get('/bookings', [AdminController::class, 'bookings'])->name('admin.bookings');
+
+
 });

@@ -109,5 +109,11 @@ class AdminController extends Controller
         }
 
         return view('admin.inquiries', compact('allInquiries', 'selectedInquiry'));
+    } 
+
+    public function bookings()
+    {
+        $bookings = Booking::all();
+        return view('admin.bookings', compact('bookings'));
     }
 }

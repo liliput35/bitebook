@@ -6,7 +6,7 @@
         <a href="{{ route('admin.dashboard') }}">Dashboard</a>
         <a href="{{ route('admin.management') }}">Management</a>
         <a href="{{ route('admin.inquiries') }}">Inquiry</a>
-        <a href="">Booking</a>
+        <a href="{{ route('admin.bookings') }}">Booking</a>
     </div> 
 
     <a href=""><img src="{{asset('images/profile-icon.png')}}" alt=""></a>
@@ -18,4 +18,5 @@
     <a href="{{ route('admin.dashboard') }}">Dashboard</a>
     <a href="{{ route('admin.management') }}">Management</a>
     <a href="{{ route('admin.inquiries') }}">Inquiry</a>
+    <a href="{{ route('admin.bookings') }}">Bookings</a>
 </div>
