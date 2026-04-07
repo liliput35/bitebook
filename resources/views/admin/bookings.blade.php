@@ -19,9 +19,9 @@
                 @forelse($group as $booking)
                 <a href="{{ route('admin.bookings.show', $booking->id) }}">
                     <div class="bg-white shadow-lg p-4 rounded-lg mb-3">
-                        <p class="text-light-gray font-medium">{{ $date }}</p>
-                        <p class="text-[1.25em] text-dark-gray font-medium">{{ $booking->event_type }}</p>
-                        <p class="text-[1.25em] text-dark-gray font-medium">{{ $booking->user->name }}</p>
+                        <p class="text-dark-green font-medium">{{ $date }}</p>
+                        <p class="text-[1.25em] text-black font-medium">{{ $booking->event_type }}</p>
+                        <p class="text-[1em] text-dark-gray font-medium">{{ $booking->user->name }}</p>
                     </div>
                 </a>
                 @empty
@@ -30,7 +30,7 @@
             </div>
         @endforeach
 
-        <div class="pb-[5em] lg:pb-0"></div>
+        <div class="pb-[5em] lg:pb-3"></div>
     </div>
 
 

@@ -38,7 +38,7 @@
 
     </div>
 
-    <div class="pb-[5em] lg:pb-0"></div>
+    <div class="pb-[5em] lg:pb-3"></div>
 </div>
 
 
