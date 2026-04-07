@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\MenuItemController;
 use App\Http\Controllers\BundleController;
 use App\Http\Controllers\InquiryController;
+use App\Http\Controllers\UserController;
 
 // Home route redirects
 Route::get('/', function () {
@@ -35,7 +36,10 @@ Route::middleware('auth')->group(function () {
 
 //USER midware
 Route::middleware(['auth', 'user'])->group(function () {
-    Route::get('/home', [HomeController::class, 'index'])->name('user.home');
+    Route::get('/home', [UserController::class, 'home'])->name('user.home');
+    Route::get('/menu', [UserController::class, 'menu'])->name('user.menu');
+    Route::get('/bundles', [UserController::class, 'bundles'])->name('user.bundles');
+    Route::get('/book', [UserController::class, 'book'])->name('user.book');
 });
 
 // Admin routes (ROLE PROTECTED)
