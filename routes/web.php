@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\MenuItemController;
 use App\Http\Controllers\BundleController;
 use App\Http\Controllers\InquiryController;
+use App\Http\Controllers\UserController;
 
 // Home route redirects
 Route::get('/', function () {
@@ -35,7 +36,26 @@ Route::middleware('auth')->group(function () {
 
 //USER midware
 Route::middleware(['auth', 'user'])->group(function () {
-    Route::get('/home', [HomeController::class, 'index'])->name('user.home');
+    Route::get('/home', [UserController::class, 'home'])->name('user.home');
+    Route::get('/menu', [UserController::class, 'menu'])->name('user.menu');
+    Route::get('/menu/{menuItem}', [UserController::class, 'itemDetails'])->name('user.menu.item');
+
+    Route::post('/cart/add/{id}', [UserController::class, 'addToCart'])
+    ->name('cart.add');
+    Route::get('/cart', [UserController::class, 'cart'])->name('user.cart');
+    Route::post('/cart/update/{id}', [UserController::class, 'updateCart'])->name('cart.update');
+    Route::post('/cart/remove/{id}', [UserController::class, 'removeFromCart'])->name('cart.remove');
+
+    Route::get('/bundles', [UserController::class, 'bundles'])->name('user.bundles');
+    Route::get('/bundles/{bundle}', [UserController::class, 'bundleDetails'])->name('user.bundle.info');
+    Route::post('/bundle/select/{id}', [UserController::class, 'selectBundle'])
+    ->name('bundle.select');
+    Route::post('/bundle/update', [UserController::class, 'updateBundle'])->name('bundle.update');
+    Route::post('/bundle/remove', [UserController::class, 'removeBundle'])->name('bundle.remove');
+
+
+    Route::get('/book', [UserController::class, 'book'])->name('user.book');
+    Route::post('/book', [UserController::class, 'storeBooking'])->name('user.book.store');
 });
 
 // Admin routes (ROLE PROTECTED)
