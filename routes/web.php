@@ -99,6 +99,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 
     //BOOKINGS 
     Route::get('/bookings', [AdminController::class, 'bookings'])->name('admin.bookings');
-
+    Route::get('/bookings/{booking}', [AdminController::class, 'showBooking'])->name('admin.bookings.show');
 
 });
