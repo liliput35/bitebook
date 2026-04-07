@@ -94,8 +94,26 @@ class AdminController extends Controller
         return view('admin.management', compact('totalMenuItems', 'menuItems', 'categories', 'bundles', 'totalBundles'));
     }
 
-    public function inquiries()
+    public function inquiries($id = null)
     {
-        return view('admin.inquiries');
+        $allInquiries = Inquiry::with('sender')
+        ->whereNull('parent_id') // only main inquiries
+        ->latest()
+        ->get();
+
+        $selectedInquiry = null;
+
+        if ($id) {
+            $selectedInquiry = Inquiry::with(['sender', 'replies.sender', 'booking'])
+                ->findOrFail($id);
+        }
+
+        return view('admin.inquiries', compact('allInquiries', 'selectedInquiry'));
+    } 
+
+    public function bookings()
+    {
+        $bookings = Booking::all();
+        return view('admin.bookings', compact('bookings'));
     }
 }
