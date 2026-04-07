@@ -112,8 +112,26 @@ class AdminController extends Controller
     } 
 
     public function bookings()
-    {
-        $bookings = Booking::all();
-        return view('admin.bookings', compact('bookings'));
-    }
+        {
+            $bookings = Booking::with('user')
+                ->orderBy('event_date', 'asc')
+                ->get()
+                ->groupBy(function ($booking) {
+                    return Carbon::parse($booking->event_date)->toDateString(); // YYYY-MM-DD
+                })
+                ->mapWithKeys(function ($group, $date) {
+                    return [
+                        Carbon::parse($date)->format('l, F j') => $group
+                    ];
+                });
+
+            return view('admin.bookings', compact('bookings'));
+        }
+
+    public function showBooking(Booking $booking)
+        {
+            $booking->load(['user', 'bundle', 'items']); // load relationships
+
+            return view('admin.booking_show', compact('booking'));
+        }
 }
