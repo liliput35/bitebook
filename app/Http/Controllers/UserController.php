@@ -236,11 +236,18 @@ class UserController extends Controller
             }
         }
 
+
         // CLEAR SESSION
         session()->forget('cart');
         session()->forget('bundle_id');
 
         return redirect()->route('user.home')->with('success', 'Booking created!');
+    }
+
+    //PROFILE
+    public function profile()
+    {
+        return view('user.profile');
     }
 
 }

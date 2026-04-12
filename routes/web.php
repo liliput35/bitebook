@@ -56,6 +56,8 @@ Route::middleware(['auth', 'user'])->group(function () {
 
     Route::get('/book', [UserController::class, 'book'])->name('user.book');
     Route::post('/book', [UserController::class, 'storeBooking'])->name('user.book.store');
+
+    Route::get('/profile', [UserController::class, 'profile'])->name('user.profile');
 });
 
 // Admin routes (ROLE PROTECTED)
@@ -100,5 +102,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     //BOOKINGS 
     Route::get('/bookings', [AdminController::class, 'bookings'])->name('admin.bookings');
     Route::get('/bookings/{booking}', [AdminController::class, 'showBooking'])->name('admin.bookings.show');
+
+    //PROFILE
+    Route::get('/profile', [AdminController::class, 'profile'])->name('admin.profile');
 
 });

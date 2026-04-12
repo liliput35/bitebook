@@ -134,4 +134,9 @@ class AdminController extends Controller
 
             return view('admin.booking_show', compact('booking'));
         }
+
+    public function profile()
+    {
+        return view('admin.profile');
+    }
 }
