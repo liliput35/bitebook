@@ -188,6 +188,7 @@ class UserController extends Controller
             'event_type' => 'required',
             'event_date' => 'required|date',
             'guest_count' => 'required|integer|min:1',
+            'venue' => 'required|string|max:255',
         ]);
 
         $cart = session('cart', []);
@@ -216,6 +217,7 @@ class UserController extends Controller
             'user_id' => Auth::id(),
             'bundle_id' => $bundleId,
             'event_type' => $request->event_type,
+            'venue' => $request->venue, 
             'event_date' => $request->event_date,
             'guest_count' => $request->guest_count,
             'status' => 'pending',

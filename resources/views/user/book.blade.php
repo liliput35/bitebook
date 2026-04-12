@@ -27,6 +27,11 @@
             <input type="number" name="guest_count" min="1" class="border p-2 w-full" required>
         </div>
 
+        <div class="mb-4">
+            <label>Venue</label>
+            <input type="text" name="venue" min="1" class="border p-2 w-full" required>
+        </div>
+
         <!-- SUMMARY -->
         <div class="bg-gray-100 p-4 rounded mb-4">
             <h2 class="font-bold mb-2">Summary</h2>
