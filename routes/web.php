@@ -114,5 +114,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     //BOOKINGS 
     Route::get('/bookings', [AdminController::class, 'bookings'])->name('admin.bookings');
     Route::get('/bookings/{booking}', [AdminController::class, 'showBooking'])->name('admin.bookings.show');
+    Route::get('/bookings/{booking}/edit', [AdminController::class, 'editBooking'])
+    ->name('admin.bookings.edit');
+
+    Route::post('/bookings/{booking}/update', [AdminController::class, 'updateBooking'])
+        ->name('admin.bookings.update');
 
 });

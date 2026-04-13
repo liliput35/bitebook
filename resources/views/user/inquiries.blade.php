@@ -78,7 +78,7 @@
                     @if($reply->sender->role === 'user')
                         <!-- ADMIN MESSAGE (RIGHT SIDE) -->
                         <div class="flex justify-end w-full">
-                            <div class="bg-blue-100 border p-3 rounded mb-2 w-[70%]">
+                            <div class="bg-blue-100 border p-3 rounded mb-2 w-auto lg:w-[50%]">
                                 <div class="text-right">
                                     <strong>{{ $reply->sender->name }}</strong>
                                     <small class="block text-xs text-gray-500">
@@ -92,7 +92,7 @@
                     @else
                         <!-- USER MESSAGE (LEFT SIDE) -->
                         <div class="flex justify-start w-full">
-                            <div class="bg-gray-100 border p-3 rounded mb-2 w-[70%]">
+                            <div class="bg-gray-100 border p-3 rounded mb-2 w-auto lg:w-[50%]">
                                 <strong>{{ $reply->sender->name }}</strong>
                                 <small class="block text-xs text-gray-500">
                                     {{ $reply->created_at->format('M d, Y') }}
@@ -109,7 +109,7 @@
                 <form action="{{ route('user.inquiries.reply', $selectedInquiry->id) }}" method="POST">
                     @csrf
                     <textarea name="message" class="w-full border p-2 rounded"></textarea>
-                    <button class="bg-green-600 text-white px-4 py-2 mt-2 rounded">Send</button>
+                    <button class="bg-blue-600 text-white px-4 py-2 mt-2 rounded">Send</button>
                 </form>
 
             @else

@@ -9,7 +9,10 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Booking;
 use App\Models\Bundle;
 use App\Models\Inquiry;
+use App\Models\BookingItem;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+
 
 class AdminController extends Controller
 {
@@ -148,5 +151,69 @@ class AdminController extends Controller
 
         return redirect()->route('admin.bookings')
     ->with('success', 'Booking confirmed');
+    }
+
+    public function editBooking(Booking $booking)
+    {
+        $booking->load('items.menuItem');
+
+        $menuItems = MenuItem::all(); // for dropdown
+
+        return view('admin.edit_booking', compact('booking', 'menuItems'));
+    }
+
+    public function updateBooking(Request $request, Booking $booking)
+    {
+        // 1. UPDATE BOOKING DETAILS
+        $booking->update([
+            'event_type' => $request->event_type,
+            'event_date' => $request->event_date,
+            'guest_count' => $request->guest_count,
+            'venue' => $request->venue,
+        ]);
+
+        // 2. HANDLE EXISTING ITEMS (UPDATE / DELETE)
+        $existingIds = [];
+
+        if ($request->existing_items) {
+            foreach ($request->existing_items as $itemId => $data) {
+
+                if (isset($data['delete'])) {
+                    BookingItem::where('id', $itemId)->delete();
+                    continue;
+                }
+
+                $item = BookingItem::find($itemId);
+
+                if ($item) {
+                    $item->update([
+                        'quantity' => $data['quantity']
+                    ]);
+
+                    $existingIds[] = $itemId;
+                }
+            }
+        }
+
+        // 3. ADD NEW ITEMS
+        if ($request->new_items) {
+            foreach ($request->new_items as $newItem) {
+
+                if (!empty($newItem['menu_item_id']) && !empty($newItem['quantity'])) {
+
+                    $menuItem = MenuItem::find($newItem['menu_item_id']);
+
+                    BookingItem::create([
+                        'booking_id' => $booking->id,
+                        'menu_item_id' => $menuItem->id,
+                        'quantity' => $newItem['quantity'],
+                        'price' => $menuItem->price,
+                    ]);
+                }
+            }
+        }
+
+        return redirect()->route('admin.bookings.show', $booking->id)
+            ->with('success', 'Booking updated successfully');
     }
 }

@@ -22,10 +22,12 @@
 
             <div class="mb-4">
                 <!-- Date -->
-                <div>
+                <div class="flex justify-between items-center">
                     <h1 class="text-[1.8em] text-dark-green font-medium lg:text-[2.5em]">
                         {{ \Carbon\Carbon::parse($booking->event_date)->format('gA | F j, Y') }}
                     </h1>
+
+                    <a href="{{ route('admin.bookings.edit', $booking->id) }}"><img src="{{asset('images/edit-icon.png')}}" alt=""></a>
                 </div>
                 <!-- Customer -->
                 <div class="mt-2">
