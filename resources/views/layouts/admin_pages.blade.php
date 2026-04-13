@@ -42,9 +42,9 @@
 
         if (isDisabled) {
             button.innerText = "Save Changes";
-            button.classList.add("border-2", "border-dark-gray" "text-biteblack", "text-[1rem]");
+            button.classList.add("border-2", "border-dark-gray", "text-biteblack", "text-[1rem]", "rounded-lg", "px-2");
         } else {
-            button.classList.remove("border-2", "border-dark-gray" "text-biteblack", "text-[1rem]");
+            button.classList.remove("border-2", "border-dark-gray", "text-biteblack", "text-[1rem]", "rounded-lg", "p-2");
             button.innerHTML = `<img src="{{asset('images/black-edit-icon.png')}}" alt="" class="max-w-[40px] mt-4"> `;
         }
     }
