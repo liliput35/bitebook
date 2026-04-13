@@ -1,10 +1,10 @@
-@extends('layouts.admin_pages')
+@extends('layouts.user_pages')
 
 @section('title', 'Inquiries')
 
-@section('admin_pages')
+@section('user_pages')
 
-<div class="lg:min-h-[100vh]">
+<div class="lg:min-h-[100vh] ">
     <div class="ml-3 mb-6 lg:hidden">
             <h1 class="text-[2em] font-bold mt-6 lg:text-[2.5em]">Inquiries</h1>
             <p class="text-dark-gray text-lg leading-none lg:text-[1.5em]">Manage your potential bookings.</p>
@@ -12,13 +12,13 @@
 
 
     <div class="flex">
-        <div class="w-1/3 border-r lg:bg-[#F5F3EC] lg:min-h-[100vh] lg:max-h-[auto] lg:pl-12">
+        <div class="w-1/3 border-r lg:bg-[#F5F3EC]  lg:pl-12 lg:min-h-[100vh] lg:max-h-[auto]">
             <div class="ml-3 mb-6 hidden lg:block">
                 <h1 class="text-[2em] font-bold mt-6 lg:text-[2.5em]">Inquiries</h1>
                 <p class="text-dark-gray text-lg leading-none lg:text-[1.5em]">Manage your potential bookings.</p>
             </div>
             @foreach($allInquiries as $inq)
-                <a href="{{ route('admin.inquiries', $inq->id) }}" 
+                <a href="{{ route('user.inquiries', $inq->id) }}" 
                 class="block p-3 border-b hover:bg-gray-100">
 
                     <div class="flex justify-between items-center">
@@ -41,10 +41,8 @@
         <div class="w-2/3 p-4 lg:mt-12 lg:pr-12">
             @if($selectedInquiry)
             @if($selectedInquiry && $selectedInquiry->booking)
-                <a href="{{ route('admin.bookings.show', $selectedInquiry->booking->id) }}"
-                class="text-blue-600 underline text-sm">
-                    View Full Booking →
-                </a>
+                
+                
 
                 <div class="flex justify-between items-center mb-3">
                     <h2 class="text-[2em] font-semibold">{{$selectedInquiry->sender->name}}</h2> 
@@ -74,9 +72,10 @@
                 </div>
 
                 <!-- REPLIES -->
+                 <!-- REPLIES -->
                 @foreach($selectedInquiry->replies as $reply)
 
-                    @if($reply->sender->role === 'admin')
+                    @if($reply->sender->role === 'user')
                         <!-- ADMIN MESSAGE (RIGHT SIDE) -->
                         <div class="flex justify-end w-full">
                             <div class="bg-blue-100 border p-3 rounded mb-2 w-[70%]">
@@ -105,18 +104,12 @@
                     @endif
 
                 @endforeach
+
                 <!-- REPLY FORM -->
-                <form action="{{ route('inquiries.reply', $selectedInquiry->id) }}" method="POST">
+                <form action="{{ route('user.inquiries.reply', $selectedInquiry->id) }}" method="POST">
                     @csrf
                     <textarea name="message" class="w-full border p-2 rounded"></textarea>
-                    <button class="bg-blue-600 text-white px-4 py-2 mt-2 rounded">Send</button>
-                </form> 
-
-                <form action="{{ route('admin.booking.confirm', $selectedInquiry->booking->id) }}" method="POST">
-                    @csrf
-                    <button class="bg-green-600 text-white px-4 py-2 rounded mt-4">
-                        Confirm Booking
-                    </button>
+                    <button class="bg-green-600 text-white px-4 py-2 mt-2 rounded">Send</button>
                 </form>
 
             @else

@@ -117,6 +117,25 @@
         </div>
 
     </div>
+
+    <div class="w-1/2 mx-auto lg:w-2/3 bg-white shadow-lg p-4 rounded-lg mt-6">
+        <form action="{{ route('inquiries.store') }}" method="POST" class="mt-6">
+            @csrf
+            <input type="hidden" name="booking_id" value="{{ $booking->id }}">
+
+            <textarea 
+                name="message" 
+                placeholder="Propose changes or message the client..."
+                class="w-full border p-2 rounded"
+                required
+            ></textarea>
+
+            <button class="bg-dark-green text-white px-4 py-2 mt-2 rounded">
+                Propose Changes
+            </button>
+        </form>
+    </div>
+
     <div class="pb-[5em]"></div>
 </div>
 

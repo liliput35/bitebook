@@ -112,26 +112,41 @@ class AdminController extends Controller
     } 
 
     public function bookings()
-        {
-            $bookings = Booking::with('user')
-                ->orderBy('event_date', 'asc')
-                ->get()
-                ->groupBy(function ($booking) {
-                    return Carbon::parse($booking->event_date)->toDateString(); // YYYY-MM-DD
-                })
-                ->mapWithKeys(function ($group, $date) {
-                    return [
-                        Carbon::parse($date)->format('l, F j') => $group
-                    ];
-                });
+    {
+        $bookings = Booking::with('user')
+            ->orderBy('event_date', 'asc')
+            ->get()
+            ->groupBy(function ($booking) {
+                return Carbon::parse($booking->event_date)->toDateString(); // YYYY-MM-DD
+            })
+            ->mapWithKeys(function ($group, $date) {
+                return [
+                    Carbon::parse($date)->format('l, F j') => $group
+                ];
+            });
 
-            return view('admin.bookings', compact('bookings'));
-        }
+        return view('admin.bookings', compact('bookings'));
+    }
 
     public function showBooking(Booking $booking)
-        {
-            $booking->load(['user', 'bundle', 'items']); // load relationships
+    {
+        $booking->load(['user', 'bundle', 'items']); // load relationships
 
-            return view('admin.booking_show', compact('booking'));
-        }
+        return view('admin.booking_show', compact('booking'));
+    }
+
+    public function confirmBooking($id)
+    {
+        $booking = Booking::findOrFail($id);
+        $booking->status = 'confirmed';
+        $booking->save();
+
+        // Close related inquiries
+        Inquiry::where('booking_id', $id)
+            ->whereNull('parent_id')
+            ->update(['status' => 'confirmed']);
+
+        return redirect()->route('admin.bookings')
+    ->with('success', 'Booking confirmed');
+    }
 }

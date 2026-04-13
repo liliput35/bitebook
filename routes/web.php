@@ -56,6 +56,14 @@ Route::middleware(['auth', 'user'])->group(function () {
 
     Route::get('/book', [UserController::class, 'book'])->name('user.book');
     Route::post('/book', [UserController::class, 'storeBooking'])->name('user.book.store');
+
+    //Route::get('/inquiries', [UserController::class, 'home'])->name('user.inquiries');
+
+    Route::get('/inquiries/{id?}', [UserController::class, 'inquiries'])
+    ->name('user.inquiries');
+
+    Route::post('/inquiries', [InquiryController::class, 'store'])->name('inquiries.store');
+    Route::post('/inquiries/{id}/reply', [InquiryController::class, 'reply'])->name('user.inquiries.reply');
 });
 
 // Admin routes (ROLE PROTECTED)
@@ -95,7 +103,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 
     Route::post('/inquiries', [InquiryController::class, 'store'])->name('inquiries.store');
     Route::post('/inquiries/{id}/reply', [InquiryController::class, 'reply'])->name('inquiries.reply');
-    Route::delete('/inquiries/{id}', [InquiryController::class, 'destroy'])->name('inquiries.delete');
+    Route::delete('/inquiries/{id}', [InquiryController::class, 'destroy'])->name('inquiries.delete'); 
+    Route::post('/bookings/{id}/confirm', [AdminController::class, 'confirmBooking'])
+    ->name('admin.booking.confirm');
 
     //BOOKINGS 
     Route::get('/bookings', [AdminController::class, 'bookings'])->name('admin.bookings');

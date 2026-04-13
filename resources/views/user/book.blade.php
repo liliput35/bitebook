@@ -75,6 +75,8 @@
 
     </form>
 
+    <div class="p-[5em] lg:p-[2em]"></div>
+
 </div>
 
 @endsection

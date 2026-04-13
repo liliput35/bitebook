@@ -245,4 +245,25 @@ class UserController extends Controller
         return redirect()->route('user.home')->with('success', 'Booking created!');
     }
 
+
+    public function inquiries($id = null)
+    {
+        $allInquiries = Inquiry::with('sender')
+            ->whereNull('parent_id')
+            ->whereHas('booking', function($q) {
+                $q->where('user_id', auth()->id());
+            })
+            ->latest()
+            ->get();
+
+        $selectedInquiry = null;
+
+        if ($id) {
+            $selectedInquiry = Inquiry::with(['sender', 'replies.sender', 'booking'])
+                ->findOrFail($id);
+        }
+
+        return view('user.inquiries', compact('allInquiries', 'selectedInquiry'));
+    }
+
 }
