@@ -264,6 +264,30 @@ class UserController extends Controller
         }
 
         return view('user.inquiries', compact('allInquiries', 'selectedInquiry'));
+    } 
+
+    public function bookings()
+    {
+        $bookings = Booking::where('user_id', auth()->id())
+            ->orderBy('event_date', 'asc')
+            ->get()
+            ->groupBy(function ($booking) {
+                return Carbon::parse($booking->event_date)->toDateString(); // YYYY-MM-DD
+            })
+            ->mapWithKeys(function ($group, $date) {
+                return [
+                    Carbon::parse($date)->format('l, F j') => $group
+                ];
+            });
+
+        return view('user.bookings', compact('bookings'));
+    }
+
+    public function showBooking(Booking $booking)
+    {
+        $booking->load(['user', 'bundle', 'items']); // load relationships
+
+        return view('user.booking_show', compact('booking'));
     }
 
 }

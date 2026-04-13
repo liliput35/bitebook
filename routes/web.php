@@ -62,8 +62,12 @@ Route::middleware(['auth', 'user'])->group(function () {
     Route::get('/inquiries/{id?}', [UserController::class, 'inquiries'])
     ->name('user.inquiries');
 
-    Route::post('/inquiries', [InquiryController::class, 'store'])->name('inquiries.store');
-    Route::post('/inquiries/{id}/reply', [InquiryController::class, 'reply'])->name('user.inquiries.reply');
+    Route::post('/inquiries', [InquiryController::class, 'store'])->name('user.inquiries.store');
+    Route::post('/inquiries/{id}/reply', [InquiryController::class, 'reply'])->name('user.inquiries.reply'); 
+
+    Route::get('/bookings', [UserController::class, 'bookings'])->name('user.bookings');
+    Route::get('/bookings/{booking}', [UserController::class, 'showBooking'])->name('user.bookings.show');
+
 });
 
 // Admin routes (ROLE PROTECTED)
