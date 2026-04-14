@@ -183,11 +183,28 @@ class AdminController extends Controller
 
     public function editBooking(Booking $booking)
     {
-        $booking->load('items.menuItem');
+        $booking->load('items.menuItem', 'bundle.requirements.category.menuItems');
 
-        $menuItems = MenuItem::all(); // for dropdown
+        $menuItems = MenuItem::all();
 
-        return view('admin.edit_booking', compact('booking', 'menuItems'));
+        $bundle = $booking->bundle;
+
+        $existingSelections = [];
+
+        if ($bundle) {
+            foreach ($booking->items as $item) {
+                $categoryId = $item->menuItem->category_id;
+
+                $existingSelections[$categoryId][] = $item->menu_item_id;
+            }
+        }
+
+        return view('admin.edit_booking', compact(
+            'booking',
+            'menuItems',
+            'bundle',
+            'existingSelections'
+        ));
     }
 
     public function updateBooking(Request $request, Booking $booking)
@@ -200,7 +217,49 @@ class AdminController extends Controller
             'venue' => $request->venue,
         ]);
 
-        // 2. HANDLE EXISTING ITEMS (UPDATE / DELETE)
+        // =========================
+        // CASE 1: BUNDLE BOOKING
+        // =========================
+        if ($booking->bundle) {
+
+            $bundle = Bundle::with('requirements.category')
+            ->findOrFail($booking->bundle_id);
+
+            // VALIDATE (same as user)
+            foreach ($bundle->requirements as $req) {
+                $selected = $request->selections[$req->category_id] ?? [];
+
+                if (count($selected) != $req->required_quantity) {
+                    return back()->with('error',
+                        "Select exactly {$req->required_quantity} items for {$req->category->name}");
+                }
+            }
+
+            // DELETE OLD ITEMS
+            $booking->items()->delete();
+
+            // RECREATE ITEMS
+            foreach ($request->selections as $items) {
+                foreach ($items as $itemId) {
+
+                    $menuItem = MenuItem::find($itemId);
+
+                    BookingItem::create([
+                        'booking_id' => $booking->id,
+                        'menu_item_id' => $itemId,
+                        'quantity' => 1,
+                        'price' => $menuItem->price,
+                    ]);
+                }
+            }
+
+            return redirect()->route('admin.bookings.show', $booking->id)
+                ->with('success', 'Bundle updated successfully');
+        }
+
+        // =========================
+        // CASE 2: CUSTOM MENU
+        // =========================
         $existingIds = [];
 
         if ($request->existing_items) {
@@ -243,5 +302,6 @@ class AdminController extends Controller
 
         return redirect()->route('admin.bookings.show', $booking->id)
             ->with('success', 'Booking updated successfully');
-    }
+    } 
+
 }

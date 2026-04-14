@@ -28,7 +28,8 @@
                     </h1>
 
                     <a href="{{ route('admin.bookings.edit', $booking->id) }}"><img src="{{asset('images/edit-icon.png')}}" alt=""></a>
-                </div>
+                </div> 
+
                 <!-- Customer -->
                 <div class="mt-2">
                     <p class="text-[1.25em] text-black font-medium lg:text-[2.5em]">

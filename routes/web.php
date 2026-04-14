@@ -124,6 +124,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     ->name('admin.bookings.edit');
 
     Route::post('/bookings/{booking}/update', [AdminController::class, 'updateBooking'])
-        ->name('admin.bookings.update');
+        ->name('admin.bookings.update'); 
+
+    // ADMIN - EDIT BUNDLE OF A BOOKING
+    Route::get('/admin/bookings/{booking}/bundle', [AdminController::class, 'editBundle'])
+        ->name('admin.booking.bundle.edit');
+
+    Route::post('/admin/bookings/{booking}/bundle', [AdminController::class, 'updateBundle'])
+        ->name('admin.booking.bundle.update');
 
 });
