@@ -37,27 +37,20 @@
             <h2 class="font-bold mb-2">Summary</h2>
 
             @if($bundle)
-                <p><strong>Bundle:</strong> {{ $bundle->name }}</p>
-                <p>₱{{ $bundle->price_per_head }} / head</p>
+                <p>Bundle: {{ $bundle->name }}</p>
                 <p>Guests: {{ $bundleData['quantity'] }}</p>
-                <p class="font-semibold">Total: ₱{{ $total }}</p>
 
-                <!-- UPDATE QUANTITY -->
-                <form action="{{ route('bundle.update') }}" method="POST" class="mt-2">
-                    @csrf
-                    <input type="number" name="quantity" value="{{ $bundleData['quantity'] }}" min="1" class="border p-1">
-                    <button class="border border-dark-green text-dark-green px-3 py-1 rounded">
-                        Update
-                    </button>
-                </form>
+                <div class="mt-2">
+                    <p class="font-semibold">Selected Items:</p>
 
-                <!-- REMOVE -->
-                <form action="{{ route('bundle.remove') }}" method="POST" class="mt-2">
-                    @csrf
-                    <button class="mt-1">
-                            <img src="{{asset('images/delete-icon.png')}}" alt="" class="max-w-[35px]">
-                        </button>
-                </form>
+                    @if(!empty($bundleData['selections']))
+                        @foreach($bundleData['selections'] as $categoryId => $items)
+                            @foreach($items as $itemId)
+                                <p>{{ $selectedItems->find($itemId)->name }}</p>
+                            @endforeach
+                        @endforeach
+                    @endif
+                </div>
             @else
                 @foreach($menuItems as $item)
                     <p>
@@ -74,6 +67,8 @@
         </button>
 
     </form>
+
+    <div class="p-[5em] lg:p-[2em]"></div>
 
 </div>
 

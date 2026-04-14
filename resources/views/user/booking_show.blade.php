@@ -1,8 +1,8 @@
-@extends('layouts.admin_pages')
+@extends('layouts.user_pages')
 
 @section('title', 'Booking Details')
 
-@section('admin_pages')
+@section('user_pages')
 
 <div class="w-[90%] mx-auto lg:min-h-[100vh]">
     
@@ -22,14 +22,11 @@
 
             <div class="mb-4">
                 <!-- Date -->
-                <div class="flex justify-between items-center">
+                <div>
                     <h1 class="text-[1.8em] text-dark-green font-medium lg:text-[2.5em]">
                         {{ \Carbon\Carbon::parse($booking->event_date)->format('gA | F j, Y') }}
                     </h1>
-
-                    <a href="{{ route('admin.bookings.edit', $booking->id) }}"><img src="{{asset('images/edit-icon.png')}}" alt=""></a>
-                </div> 
-
+                </div>
                 <!-- Customer -->
                 <div class="mt-2">
                     <p class="text-[1.25em] text-black font-medium lg:text-[2.5em]">
@@ -132,7 +129,7 @@
     </div>
 
     <div class="w-1/2 mx-auto lg:w-2/3 bg-white shadow-lg p-4 rounded-lg mt-6">
-        <form action="{{ route('inquiries.store') }}" method="POST" class="mt-6">
+        <form action="{{ route('user.inquiries.store') }}" method="POST" class="mt-6">
             @csrf
             <input type="hidden" name="booking_id" value="{{ $booking->id }}">
 

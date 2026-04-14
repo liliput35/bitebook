@@ -51,11 +51,29 @@ Route::middleware(['auth', 'user'])->group(function () {
     Route::post('/bundle/select/{id}', [UserController::class, 'selectBundle'])
     ->name('bundle.select');
     Route::post('/bundle/update', [UserController::class, 'updateBundle'])->name('bundle.update');
-    Route::post('/bundle/remove', [UserController::class, 'removeBundle'])->name('bundle.remove');
+    Route::post('/bundle/remove', [UserController::class, 'removeBundle'])->name('bundle.remove'); 
+
+    Route::get('/bundle/customize', [UserController::class, 'customizeBundle'])
+        ->name('user.bundle.customize');
+
+    Route::post('/bundle/customize', [UserController::class, 'saveBundleSelection'])
+        ->name('user.bundle.save');
 
 
     Route::get('/book', [UserController::class, 'book'])->name('user.book');
     Route::post('/book', [UserController::class, 'storeBooking'])->name('user.book.store');
+
+    //Route::get('/inquiries', [UserController::class, 'home'])->name('user.inquiries');
+
+    Route::get('/inquiries/{id?}', [UserController::class, 'inquiries'])
+    ->name('user.inquiries');
+
+    Route::post('/inquiries', [InquiryController::class, 'store'])->name('user.inquiries.store');
+    Route::post('/inquiries/{id}/reply', [InquiryController::class, 'reply'])->name('user.inquiries.reply'); 
+
+    Route::get('/bookings', [UserController::class, 'bookings'])->name('user.bookings');
+    Route::get('/bookings/{booking}', [UserController::class, 'showBooking'])->name('user.bookings.show');
+
 });
 
 // Admin routes (ROLE PROTECTED)
@@ -95,10 +113,29 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 
     Route::post('/inquiries', [InquiryController::class, 'store'])->name('inquiries.store');
     Route::post('/inquiries/{id}/reply', [InquiryController::class, 'reply'])->name('inquiries.reply');
-    Route::delete('/inquiries/{id}', [InquiryController::class, 'destroy'])->name('inquiries.delete');
+    Route::delete('/inquiries/{id}', [InquiryController::class, 'destroy'])->name('inquiries.delete'); 
+    Route::post('/bookings/{id}/confirm', [AdminController::class, 'confirmBooking'])
+    ->name('admin.booking.confirm');
 
     //BOOKINGS 
     Route::get('/bookings', [AdminController::class, 'bookings'])->name('admin.bookings');
     Route::get('/bookings/{booking}', [AdminController::class, 'showBooking'])->name('admin.bookings.show');
+    Route::get('/bookings/{booking}/edit', [AdminController::class, 'editBooking'])
+    ->name('admin.bookings.edit');
 
+    Route::post('/bookings/{booking}/update', [AdminController::class, 'updateBooking'])
+        ->name('admin.bookings.update'); 
+
+    // ADMIN - EDIT BUNDLE OF A BOOKING
+    Route::get('/admin/bookings/{booking}/bundle', [AdminController::class, 'editBundle'])
+        ->name('admin.booking.bundle.edit');
+
+    Route::post('/admin/bookings/{booking}/bundle', [AdminController::class, 'updateBundle'])
+        ->name('admin.booking.bundle.update');
+
+    Route::get('/book', [AdminController::class, 'createBooking'])
+        ->name('admin.book');
+
+    Route::post('/book/store', [AdminController::class, 'storeBooking'])
+        ->name('admin.book.store');
 });
