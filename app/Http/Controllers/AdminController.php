@@ -135,7 +135,26 @@ class AdminController extends Controller
     {
         $booking->load(['user', 'bundle', 'items']); // load relationships
 
-        return view('admin.booking_show', compact('booking'));
+       $subtotal = 0;
+
+        foreach ($booking->items as $item) {
+            $subtotal += $item->price * $item->quantity;
+        }
+
+        $bundleTotal = null;
+        $discount = 0;
+
+        if ($booking->bundle) {
+            $bundleTotal = $booking->bundle->price_per_head * $booking->guest_count;
+            $discount = $subtotal - $bundleTotal;
+        }
+
+        return view('admin.booking_show', compact(
+            'booking',
+            'subtotal',
+            'bundleTotal',
+            'discount', 
+        ));
     }
 
     public function confirmBooking($id)

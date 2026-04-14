@@ -89,25 +89,35 @@
                 <div class="border-t my-3"></div>
 
                 <!-- SUBTOTAL -->
-                <div class="flex text-light-gray justify-between text-[1.1em] mb-4 lg:mb-2">
+                <div class="flex text-light-gray justify-between text-[1.1em] mb-2">
                     <p>Subtotal</p>
                     <p>₱{{ number_format($subtotal, 2) }}</p>
                 </div>
 
-                <!-- DELIVERY -->
-                @php
-                    $delivery = 500;
-                @endphp
+                <!-- IF BUNDLE -->
+                @if($booking->bundle)
+                    <div class="flex text-red-500 justify-between text-[1.1em] mb-2">
+                        <p>Bundle Discount</p>
+                        <p>-₱{{ number_format($discount, 2) }}</p>
+                    </div>
+                @endif
 
-                <div class="flex text-light-gray justify-between text-[1.1em] mb-12">
+                <!-- DELIVERY -->
+                @php $delivery = 500; @endphp
+                <div class="flex text-light-gray justify-between text-[1.1em] mb-2">
                     <p>Delivery & Setup</p>
                     <p>₱{{ number_format($delivery, 2) }}</p>
                 </div>
 
                 <!-- TOTAL -->
-                <div class="flex justify-between text-[1.3em] lg:text-[1.2em] font-bold">
+                <div class="flex justify-between text-[1.3em] font-bold mt-3">
                     <p>Estimated Total</p>
-                    <p>₱{{ number_format($subtotal + $delivery, 2) }}</p>
+
+                    @if($booking->bundle)
+                        <p>₱{{ number_format($bundleTotal + $delivery, 2) }}</p>
+                    @else
+                        <p>₱{{ number_format($subtotal + $delivery, 2) }}</p>
+                    @endif
                 </div>
 
             @else
