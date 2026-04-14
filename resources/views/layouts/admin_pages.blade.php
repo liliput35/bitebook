@@ -68,4 +68,36 @@ if (bookingAddBtn) {
         }
     });
 }
+
+
+// TOGGLE MODE
+let mode = document.getElementById('mode');
+let custom = document.getElementById('custom-section');
+let bundle = document.getElementById('bundle-section');
+
+mode.addEventListener('change', function () {
+    if (this.value === 'bundle') {
+        custom.classList.add('hidden');
+        bundle.classList.remove('hidden');
+    } else {
+        custom.classList.remove('hidden');
+        bundle.classList.add('hidden');
+    }
+});
+
+// SHOW SELECTED BUNDLE REQUIREMENTS
+let bundleSelect = document.getElementById('bundleSelect');
+
+if (bundleSelect) {
+    bundleSelect.addEventListener('change', function () {
+
+        document.querySelectorAll('.bundle-box').forEach(box => {
+            box.classList.add('hidden');
+        });
+
+        let selected = document.querySelector(`[data-bundle="${this.value}"]`);
+        if (selected) selected.classList.remove('hidden');
+    });
+}
+
 </script>

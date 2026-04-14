@@ -304,4 +304,112 @@ class AdminController extends Controller
             ->with('success', 'Booking updated successfully');
     } 
 
+    public function createBooking()
+    {
+        $menuItems = MenuItem::all();
+        $bundles = Bundle::with('requirements.category.menuItems')->get();
+
+        return view('admin.create_booking', compact('menuItems', 'bundles'));
+    }
+
+    public function storeBooking(Request $request)
+    {
+        $request->validate([
+            'event_type' => 'required',
+            'event_date' => 'required|date',
+            'guest_count' => 'required|integer|min:1',
+            'venue' => 'required|string|max:255',
+        ]);
+
+        $total = 0;
+
+        // =========================
+        // CASE 1: BUNDLE
+        // =========================
+        if ($request->bundle_id) {
+
+            $bundle = Bundle::with('requirements.category')
+                ->findOrFail($request->bundle_id);
+
+            // VALIDATE (same as user/admin edit)
+            foreach ($bundle->requirements as $req) {
+                $selected = $request->selections[$req->category_id] ?? [];
+
+                if (count($selected) != $req->required_quantity) {
+                    return back()->with('error',
+                        "Select exactly {$req->required_quantity} items for {$req->category->name}");
+                }
+            }
+
+            $total = $bundle->price_per_head * $request->guest_count;
+
+            $booking = Booking::create([
+                'user_id' => null, // or assign later
+                'bundle_id' => $bundle->id,
+                'event_type' => $request->event_type,
+                'venue' => $request->venue,
+                'event_date' => $request->event_date,
+                'guest_count' => $request->guest_count,
+                'status' => 'pending',
+                'total_price' => $total,
+            ]);
+
+            foreach ($request->selections as $items) {
+                foreach ($items as $itemId) {
+
+                    $menuItem = MenuItem::find($itemId);
+
+                    BookingItem::create([
+                        'booking_id' => $booking->id,
+                        'menu_item_id' => $itemId,
+                        'quantity' => 1,
+                        'price' => $menuItem->price,
+                    ]);
+                }
+            }
+        }
+
+        // =========================
+        // CASE 2: CUSTOM MENU
+        // =========================
+        else {
+
+            foreach ($request->new_items as $item) {
+                if (!empty($item['menu_item_id']) && !empty($item['quantity'])) {
+                    $menuItem = MenuItem::find($item['menu_item_id']);
+                    $total += $menuItem->price * $item['quantity'];
+                }
+            }
+
+            $booking = Booking::create([
+                'user_id' => 1,
+                'bundle_id' => null,
+                'event_type' => $request->event_type,
+                'venue' => $request->venue,
+                'event_date' => $request->event_date,
+                'guest_count' => $request->guest_count,
+                'status' => 'pending',
+                'total_price' => $total,
+            ]);
+
+            foreach ($request->new_items as $item) {
+
+                if (!empty($item['menu_item_id']) && !empty($item['quantity'])) {
+
+                    $menuItem = MenuItem::find($item['menu_item_id']);
+
+                    BookingItem::create([
+                        'booking_id' => $booking->id,
+                        'menu_item_id' => $menuItem->id,
+                        'quantity' => $item['quantity'],
+                        'price' => $menuItem->price,
+                    ]);
+                }
+            }
+        }
+
+        return redirect()->route('admin.bookings')
+            ->with('success', 'Booking created successfully');
+    }
+
 }

@@ -133,4 +133,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::post('/admin/bookings/{booking}/bundle', [AdminController::class, 'updateBundle'])
         ->name('admin.booking.bundle.update');
 
+    Route::get('/book', [AdminController::class, 'createBooking'])
+        ->name('admin.book');
+
+    Route::post('/book/store', [AdminController::class, 'storeBooking'])
+        ->name('admin.book.store');
 });
