@@ -51,7 +51,13 @@ Route::middleware(['auth', 'user'])->group(function () {
     Route::post('/bundle/select/{id}', [UserController::class, 'selectBundle'])
     ->name('bundle.select');
     Route::post('/bundle/update', [UserController::class, 'updateBundle'])->name('bundle.update');
-    Route::post('/bundle/remove', [UserController::class, 'removeBundle'])->name('bundle.remove');
+    Route::post('/bundle/remove', [UserController::class, 'removeBundle'])->name('bundle.remove'); 
+
+    Route::get('/bundle/customize', [UserController::class, 'customizeBundle'])
+        ->name('user.bundle.customize');
+
+    Route::post('/bundle/customize', [UserController::class, 'saveBundleSelection'])
+        ->name('user.bundle.save');
 
 
     Route::get('/book', [UserController::class, 'book'])->name('user.book');

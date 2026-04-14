@@ -179,32 +179,12 @@ class DatabaseSeeder extends Seeder
         ]); 
 
         Inquiry::create([
-            'booking_id' => 1,
-            'sender_id' => $user->id,
-            'message' => 'Hehe added guests',
-            'status' => 'responded',
-        ]); 
-
-        Inquiry::create([
             'booking_id' => 2,
             'sender_id' => $user->id,
             'message' => 'Allergy concerns',
-            'status' => 'confirmed',
-        ]); 
-
-        Inquiry::create([
-            'booking_id' => 1,
-            'sender_id' => $user->id,
-            'message' => 'Here comes the bride',
-            'status' => 'responded',
-        ]); 
-
-        Inquiry::create([
-            'booking_id' => 2,
-            'sender_id' => $user->id,
-            'message' => 'What',
             'status' => 'new',
         ]); 
+
 
         //BOOKING ITEMS 
         $menuItems = MenuItem::all();
