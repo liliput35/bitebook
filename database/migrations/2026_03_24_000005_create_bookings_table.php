@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('bundle_id')->nullable()->constrained()->nullOnDelete();
+            $table->string('event_type');
+            $table->string('venue')->nullable();
             $table->date('event_date');
             $table->integer('guest_count');
             $table->string('status')->default('new');
