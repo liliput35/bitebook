@@ -96,9 +96,9 @@
 
                 <!-- IF BUNDLE -->
                 @if($booking->bundle)
-                    <div class="flex text-red-500 justify-between text-[1.1em] mb-2">
-                        <p>Bundle Discount</p>
-                        <p>-₱{{ number_format($discount, 2) }}</p>
+                    <div class="flex {{ $discColor === 'green' ? 'text-green-500' : 'text-red-500' }} justify-between text-[1.1em] mb-2">
+                        <p>Bundle: {{$booking->bundle->name}}</p>
+                        <p>₱{{ number_format($discount, 2) }}</p>
                     </div>
                 @endif
 

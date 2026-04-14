@@ -319,6 +319,7 @@ class UserController extends Controller
         $booking->load(['user', 'bundle', 'items']); // load relationships
 
        $subtotal = 0;
+       $discColor = "red" ; 
 
         foreach ($booking->items as $item) {
             $subtotal += $item->price * $item->quantity;
@@ -330,6 +331,13 @@ class UserController extends Controller
         if ($booking->bundle) {
             $bundleTotal = $booking->bundle->price_per_head * $booking->guest_count;
             $discount = $subtotal - $bundleTotal;
+
+            if($discount < 0){ 
+                $discount *= -1 ;
+                $discColor = "green" ;
+            } else { 
+                $discColor = "red" ;
+            }
         }
 
         return view('user.booking_show', compact(
@@ -337,6 +345,7 @@ class UserController extends Controller
             'subtotal',
             'bundleTotal',
             'discount', 
+            'discColor'
         ));
     }
 

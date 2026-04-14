@@ -1,8 +1,8 @@
 <?php
 
 namespace Database\Seeders;
-use Illuminate\Support\Facades\Hash;
 
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Category;
@@ -18,7 +18,9 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        //USER admin 123456 
+        // ============================
+        // USERS
+        // ============================
         User::create([
             'name' => 'Admin',
             'username' => 'admin',
@@ -26,7 +28,6 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin',
         ]);
 
-        //USER Lorenz 123456 
         User::create([
             'name' => 'Lorenz Ciocon',
             'username' => 'lorenz',
@@ -34,6 +35,19 @@ class DatabaseSeeder extends Seeder
             'role' => 'user',
         ]);
 
+        User::create([
+            'name' => 'Mia Chua',
+            'username' => 'mia',
+            'password' => Hash::make('password123456'),
+            'role' => 'user',
+        ]);
+
+        User::create([
+            'name' => 'Erika Jaud',
+            'username' => 'erika',
+            'password' => Hash::make('password123456'),
+            'role' => 'user',
+        ]);
 
         // ============================
         // CATEGORIES
@@ -58,151 +72,138 @@ class DatabaseSeeder extends Seeder
         }
 
         // ============================
-        // MENU ITEMS
+        // MENU ITEMS (2 PER CATEGORY)
         // ============================
-        MenuItem::create([
-            'name' => 'Roast Beef w/ Mashed Potatoes',
-            'description' => 'Sample description',
-            'price' => 1200,
-            'image' => null,
-            'is_active' => true,
-            'category_id' => $categoryMap['Beef']
-        ]);
+        foreach ($categoryMap as $name => $id) {
+            MenuItem::create([
+                'name' => "$name Special A",
+                'description' => 'Sample description',
+                'price' => rand(400, 1500),
+                'category_id' => $id,
+                'is_active' => true
+            ]);
 
-        MenuItem::create([
-            'name' => 'Chicken Relleno',
-            'description' => 'Sample description',
-            'price' => 950,
-            'image' => null,
-            'is_active' => true,
-            'category_id' => $categoryMap['Chicken']
-        ]);
-
-        MenuItem::create([
-            'name' => 'Paella',
-            'description' => 'Sample description',
-            'price' => 1550,
-            'image' => null,
-            'is_active' => true,
-            'category_id' => $categoryMap['Rice']
-        ]);
-
-        MenuItem::create([
-            'name' => 'Lasagna',
-            'description' => 'Sample description',
-            'price' => 1100,
-            'image' => null,
-            'is_active' => true,
-            'category_id' => $categoryMap['Noodles/Pasta']
-        ]);
+            MenuItem::create([
+                'name' => "$name Special B",
+                'description' => 'Sample description',
+                'price' => rand(400, 1500),
+                'category_id' => $id,
+                'is_active' => true
+            ]);
+        }
 
         // ============================
-        // BUNDLE
+        // BUNDLES (3 TOTAL)
         // ============================
-        $bundle = Bundle::create([
+        $bundle1 = Bundle::create([
             'name' => 'Classic Wedding Reception',
-            'description' => 'Standard full-course meal (rice or pasta, two main dishes, salad, sides, dessert, drinks)',
+            'description' => 'Standard full-course meal',
             'price_per_head' => 600
+        ]);
+
+        $bundle2 = Bundle::create([
+            'name' => 'Premium Celebration Package',
+            'description' => 'More premium dishes + seafood',
+            'price_per_head' => 850
+        ]);
+
+        $bundle3 = Bundle::create([
+            'name' => 'Budget Party Package',
+            'description' => 'Simple but complete meal set',
+            'price_per_head' => 450
         ]);
 
         // ============================
         // BUNDLE REQUIREMENTS
-        // (Defines what categories user must choose from)
         // ============================
-        BundleRequirement::create([
-            'bundle_id' => $bundle->id,
-            'category_id' => $categoryMap['Rice'],
-            'required_quantity' => 1
-        ]);
 
-        BundleRequirement::create([
-            'bundle_id' => $bundle->id,
-            'category_id' => $categoryMap['Noodles/Pasta'],
-            'required_quantity' => 1
-        ]);
+        // Classic
+        foreach (['Rice','Noodles/Pasta','Beef','Chicken','Salad','Dessert'] as $cat) {
+            BundleRequirement::create([
+                'bundle_id' => $bundle1->id,
+                'category_id' => $categoryMap[$cat],
+                'required_quantity' => 1
+            ]);
+        }
 
-        BundleRequirement::create([
-            'bundle_id' => $bundle->id,
-            'category_id' => $categoryMap['Beef'],
-            'required_quantity' => 1
-        ]);
+        // Premium (more items)
+        foreach (['Rice','Seafood','Beef','Chicken','Soup','Dessert'] as $cat) {
+            BundleRequirement::create([
+                'bundle_id' => $bundle2->id,
+                'category_id' => $categoryMap[$cat],
+                'required_quantity' => 1
+            ]);
+        }
 
-        BundleRequirement::create([
-            'bundle_id' => $bundle->id,
-            'category_id' => $categoryMap['Chicken'],
-            'required_quantity' => 1
-        ]);
+        // Budget
+        foreach (['Rice','Chicken','Pork','Dessert'] as $cat) {
+            BundleRequirement::create([
+                'bundle_id' => $bundle3->id,
+                'category_id' => $categoryMap[$cat],
+                'required_quantity' => 1
+            ]);
+        }
 
-        BundleRequirement::create([
-            'bundle_id' => $bundle->id,
-            'category_id' => $categoryMap['Salad'],
-            'required_quantity' => 1
-        ]);
-
-        BundleRequirement::create([
-            'bundle_id' => $bundle->id,
-            'category_id' => $categoryMap['Dessert'],
-            'required_quantity' => 1
-        ]);
-
-
-        $user = User::offset(1)->first();
-
-        //BOOKINGS
-        Booking::create([
-            'user_id' => $user->id,
-            'event_type' => 'Wedding Reception',
-            'event_date' => Carbon::now()->addDays(2),
-            'venue' => 'Bata',
-            'guest_count' => 100,
-            'status' => 'confirmed',
-            'total_price' => 60000,
-            'bundle_id' => 1,
-        ]);
-
-        Booking::create([
-            'user_id' => $user->id,
-            'event_type' => 'Family Reunion',
-            'event_date' => Carbon::now()->addDays(10),
-            'venue' => 'Space',
-            'guest_count' => 50,
-            'status' => 'pending',
-            'total_price' => 30000,
-            'bundle_id' => 1,
-        ]);
-
-        Inquiry::create([
-            'booking_id' => 1,
-            'sender_id' => $user->id,
-            'message' => 'Can we adjust the menu?',
-            'status' => 'new',
-        ]); 
-
-        Inquiry::create([
-            'booking_id' => 2,
-            'sender_id' => $user->id,
-            'message' => 'Allergy concerns',
-            'status' => 'new',
-        ]); 
-
-
-        //BOOKING ITEMS 
+        // ============================
+        // BOOKINGS (MIXED)
+        // ============================
+        $users = User::where('role', 'user')->get();
         $menuItems = MenuItem::all();
-        $bookings = Booking::all();
 
-        foreach ($bookings as $booking) {
+        foreach ($users as $user) {
 
-            // Each booking gets 2–3 random items
-            $items = $menuItems->random(rand(2, 3));
+            // BUNDLE BOOKING
+            $bundleBooking = Booking::create([
+                'user_id' => $user->id,
+                'event_type' => 'Wedding Reception',
+                'event_date' => Carbon::now()->addDays(rand(1, 20)),
+                'venue' => 'Hall A',
+                'guest_count' => rand(20, 100),
+                'status' => 'pending',
+                'bundle_id' => $bundle1->id,
+                'total_price' => 0, // optional
+            ]);
 
+            // attach random items (simulate bundle selections)
+            $items = $menuItems->random(5);
             foreach ($items as $item) {
                 BookingItem::create([
-                    'booking_id' => $booking->id,
+                    'booking_id' => $bundleBooking->id,
                     'menu_item_id' => $item->id,
-                    'quantity' => rand(1, 5),
+                    'quantity' => 1,
                     'price' => $item->price,
                 ]);
             }
+
+            // CUSTOM BOOKING (NO BUNDLE)
+            $customBooking = Booking::create([
+                'user_id' => $user->id,
+                'event_type' => 'Birthday Party',
+                'event_date' => Carbon::now()->addDays(rand(5, 25)),
+                'venue' => 'Garden',
+                'guest_count' => rand(10, 50),
+                'status' => 'confirmed',
+                'bundle_id' => null,
+                'total_price' => 0,
+            ]);
+
+            $items = $menuItems->random(3);
+            foreach ($items as $item) {
+                BookingItem::create([
+                    'booking_id' => $customBooking->id,
+                    'menu_item_id' => $item->id,
+                    'quantity' => rand(1, 3),
+                    'price' => $item->price,
+                ]);
+            }
+
+            // INQUIRY
+            Inquiry::create([
+                'booking_id' => $bundleBooking->id,
+                'sender_id' => $user->id,
+                'message' => 'Can we change one dish?',
+                'status' => 'new',
+            ]);
         }
     }
 }
