@@ -12,6 +12,7 @@ use App\Models\Inquiry;
 use App\Models\BookingItem;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 
 class AdminController extends Controller
@@ -142,12 +143,6 @@ class AdminController extends Controller
             $subtotal += $item->price * $item->quantity;
         }
 
-<<<<<<< HEAD
-    public function profile()
-    {
-        return view('admin.profile');
-    }
-=======
         $bundleTotal = null;
         $discount = 0;
 
@@ -170,6 +165,37 @@ class AdminController extends Controller
             'discount', 
             'discColor'
         ));
+    }
+
+    //PROFILE
+    public function profile()
+    {
+        return view('admin.profile');
+    }
+
+    public function updateProfile(Request $request)
+    {
+    $request->validate([
+        'first_name' => 'required',
+        'last_name' => 'required',
+        'username' => 'required',
+        'password' => 'nullable|min:6',
+    ]);
+
+    $user = auth()->user();
+
+    // combine name safely
+    $user->name = trim($request->first_name . ' ' . $request->last_name);
+
+    $user->username = $request->username;
+
+    if (!empty($request->password)) {
+        $user->password = Hash::make($request->password);
+    }
+
+    $user->save();
+
+    return back()->with('success', 'Profile updated successfully!');
     }
 
     public function confirmBooking($id)
@@ -418,5 +444,4 @@ class AdminController extends Controller
             ->with('success', 'Booking created successfully');
     }
 
->>>>>>> b82d2672b56b87ddb6302391635ebacae970ea54
 }

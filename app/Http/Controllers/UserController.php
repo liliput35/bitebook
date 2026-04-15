@@ -252,8 +252,6 @@ class UserController extends Controller
             }
         }
 
-<<<<<<< HEAD
-=======
         if ($bundleData && isset($bundleData['selections'])) {
 
             foreach ($bundleData['selections'] as $items) {
@@ -270,7 +268,6 @@ class UserController extends Controller
                 }
             }
         }
->>>>>>> b82d2672b56b87ddb6302391635ebacae970ea54
 
         // CLEAR SESSION
         session()->forget('cart');
@@ -279,12 +276,6 @@ class UserController extends Controller
         return redirect()->route('user.home')->with('success', 'Booking created!');
     }
 
-<<<<<<< HEAD
-    //PROFILE
-    public function profile()
-    {
-        return view('user.profile');
-=======
 
     public function inquiries($id = null)
     {
@@ -358,7 +349,11 @@ class UserController extends Controller
         ));
     }
 
-
+        //PROFILE
+    public function profile()
+    {
+        return view('user.profile');
+    }
 
     public function customizeBundle()
     {
@@ -395,7 +390,6 @@ class UserController extends Controller
         session()->put('bundle', $bundleData);
 
         return redirect()->route('user.book')->with('success', 'Bundle customized!');
->>>>>>> b82d2672b56b87ddb6302391635ebacae970ea54
     }
 
 }

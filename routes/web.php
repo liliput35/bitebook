@@ -126,6 +126,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 
     //PROFILE
     Route::get('/profile', [AdminController::class, 'profile'])->name('admin.profile');
+    Route::put('/profile', [AdminController::class, 'updateProfile'])->name('admin.profile.update');
 
     Route::post('/bookings/{booking}/update', [AdminController::class, 'updateBooking'])
         ->name('admin.bookings.update'); 

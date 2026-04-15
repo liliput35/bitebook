@@ -11,36 +11,103 @@
 </main> 
 
 <script>
-// =======================
-// BUNDLE REQUIREMENTS
-// =======================
-let addRowBtn = document.getElementById('add-row');
+    // =======================
+    // BUNDLE REQUIREMENTS
+    // =======================
+    let addRowBtn = document.getElementById('add-row');
 
-if (addRowBtn) {
-    addRowBtn.addEventListener('click', function () {
-        let container = document.getElementById('requirements-container');
-        let row = document.querySelector('.requirement-row').cloneNode(true);
+    if (addRowBtn) {
+        addRowBtn.addEventListener('click', function () {
+            let container = document.getElementById('requirements-container');
+            let row = document.querySelector('.requirement-row').cloneNode(true);
 
-        row.querySelector('input').value = '';
+            row.querySelector('input').value = '';
 
-        container.appendChild(row);
-    });
+            container.appendChild(row);
+        });
 
-    document.addEventListener('click', function (e) {
-        if (e.target.classList.contains('remove-row')) {
-            if (document.querySelectorAll('.requirement-row').length > 1) {
-                e.target.parentElement.remove();
+        document.addEventListener('click', function (e) {
+            if (e.target.classList.contains('remove-row')) {
+                if (document.querySelectorAll('.requirement-row').length > 1) {
+                    e.target.parentElement.remove();
+                }
             }
+        });
+    }
+
+
+    // =======================
+    // BOOKING ITEMS
+    // =======================
+    let bookingAddBtn = document.getElementById('booking-add-row');
+    let index = 1;
+
+    if (bookingAddBtn) {
+        bookingAddBtn.addEventListener('click', function () {
+            let container = document.getElementById('items-container');
+            let row = document.querySelector('.item-row').cloneNode(true);
+
+            // RESET VALUES
+            row.querySelector('select').name = `new_items[${index}][menu_item_id]`;
+            row.querySelector('select').value = '';
+
+            row.querySelector('input').name = `new_items[${index}][quantity]`;
+            row.querySelector('input').value = '';
+
+            container.appendChild(row);
+            index++;
+        });
+
+        document.addEventListener('click', function (e) {
+            if (e.target.classList.contains('booking-remove-row')) {
+                let rows = document.querySelectorAll('.item-row');
+
+                if (rows.length > 1) {
+                    e.target.parentElement.remove();
+                }
+            }
+        });
+    }
+
+
+    // TOGGLE MODE
+    let mode = document.getElementById('mode');
+    let custom = document.getElementById('custom-section');
+    let bundle = document.getElementById('bundle-section');
+
+    mode.addEventListener('change', function () {
+        if (this.value === 'bundle') {
+            custom.classList.add('hidden');
+            bundle.classList.remove('hidden');
+        } else {
+            custom.classList.remove('hidden');
+            bundle.classList.add('hidden');
         }
     });
 
+    // SHOW SELECTED BUNDLE REQUIREMENTS
+    let bundleSelect = document.getElementById('bundleSelect');
+
+    if (bundleSelect) {
+        bundleSelect.addEventListener('change', function () {
+
+            document.querySelectorAll('.bundle-box').forEach(box => {
+                box.classList.add('hidden');
+            });
+
+            let selected = document.querySelector(`[data-bundle="${this.value}"]`);
+            if (selected) selected.classList.remove('hidden');
+        });
+    }
+
     function toggleEdit(section) {
-        let fields = document.querySelectorAll(`#${section}Fields .input-field`);
+        let container = document.getElementById(`${section}Fields`);
+        let fields = container.querySelectorAll('.input-field');
         let button = document.getElementById(section + "Btn");
 
-        let isDisabled = fields[0].disabled;
+        let form = document.querySelector('form'); 
 
-        console.log("clicked") ;
+        let isDisabled = fields[0].disabled;
 
         fields.forEach(input => {
             input.disabled = !isDisabled;
@@ -48,78 +115,17 @@ if (addRowBtn) {
 
         if (isDisabled) {
             button.innerText = "Save Changes";
-            button.classList.add("border-2", "border-dark-gray", "text-biteblack", "text-[1rem]", "rounded-lg", "px-2");
+            button.classList.add(
+                "border-2",
+                "border-dark-gray",
+                "text-biteblack",
+                "text-[1rem]",
+                "rounded-lg",
+                "px-2"
+            );
         } else {
-            button.classList.remove("border-2", "border-dark-gray", "text-biteblack", "text-[1rem]", "rounded-lg", "p-2");
-            button.innerHTML = `<img src="{{asset('images/black-edit-icon.png')}}" alt="" class="max-w-[40px] mt-4"> `;
+            form.submit(); // ✅ SAFE submit
         }
     }
-</script>
-}
-
-
-// =======================
-// BOOKING ITEMS
-// =======================
-let bookingAddBtn = document.getElementById('booking-add-row');
-let index = 1;
-
-if (bookingAddBtn) {
-    bookingAddBtn.addEventListener('click', function () {
-        let container = document.getElementById('items-container');
-        let row = document.querySelector('.item-row').cloneNode(true);
-
-        // RESET VALUES
-        row.querySelector('select').name = `new_items[${index}][menu_item_id]`;
-        row.querySelector('select').value = '';
-
-        row.querySelector('input').name = `new_items[${index}][quantity]`;
-        row.querySelector('input').value = '';
-
-        container.appendChild(row);
-        index++;
-    });
-
-    document.addEventListener('click', function (e) {
-        if (e.target.classList.contains('booking-remove-row')) {
-            let rows = document.querySelectorAll('.item-row');
-
-            if (rows.length > 1) {
-                e.target.parentElement.remove();
-            }
-        }
-    });
-}
-
-
-// TOGGLE MODE
-let mode = document.getElementById('mode');
-let custom = document.getElementById('custom-section');
-let bundle = document.getElementById('bundle-section');
-
-mode.addEventListener('change', function () {
-    if (this.value === 'bundle') {
-        custom.classList.add('hidden');
-        bundle.classList.remove('hidden');
-    } else {
-        custom.classList.remove('hidden');
-        bundle.classList.add('hidden');
-    }
-});
-
-// SHOW SELECTED BUNDLE REQUIREMENTS
-let bundleSelect = document.getElementById('bundleSelect');
-
-if (bundleSelect) {
-    bundleSelect.addEventListener('change', function () {
-
-        document.querySelectorAll('.bundle-box').forEach(box => {
-            box.classList.add('hidden');
-        });
-
-        let selected = document.querySelector(`[data-bundle="${this.value}"]`);
-        if (selected) selected.classList.remove('hidden');
-    });
-}
 
 </script>
