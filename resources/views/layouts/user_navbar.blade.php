@@ -7,6 +7,7 @@
         <a href="{{ route('user.menu') }}">Menu</a>
         <a href="{{ route('user.bundles') }}">Bundles</a>
         <a href="{{ route('user.book') }}">Book</a> 
+        <a href="{{ route('user.inquiries') }}">Inquiries</a> 
         <a href="{{ route('user.cart') }}">Cart</a> 
 
     </div> 
@@ -21,5 +22,6 @@
     <a href="{{ route('user.menu') }}">Menu</a>
     <a href="{{ route('user.bundles') }}">Bundles</a>
     <a href="{{ route('user.book') }}">Book</a>
+    <a href="{{ route('user.inquiries') }}">Inquiries</a>
     <a href="{{ route('user.cart') }}">Cart</a> 
 </div>

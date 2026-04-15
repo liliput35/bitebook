@@ -15,7 +15,7 @@
             <p class="text-dark-gray text-lg leading-none lg:text-[1.5em]">Here is what's simmering in your kitchen today.</p>
         </div>
 
-        <a href="" class="py-2 px-6 bg-light-green text-background rounded-lg hidden lg:block">+ New Booking</a>
+        <a href="{{route('admin.book')}}" class="py-2 px-6 bg-light-green text-background rounded-lg hidden lg:block">+ New Booking</a>
     </div>
     
     <!-- dashboard misc info -->

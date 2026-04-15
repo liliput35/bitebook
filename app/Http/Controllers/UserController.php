@@ -52,7 +52,7 @@ class UserController extends Controller
         ]);
 
         // BLOCK if bundle already selected
-        if (session()->has('bundle_id')) {
+        if (session()->has('bundle')) {
             return back()->with('error', 'You already selected a bundle.');
         }
 
@@ -110,6 +110,8 @@ class UserController extends Controller
     
     public function bundleDetails(Bundle $bundle)
     {
+        $bundle->load('requirements.category.menuItems');
+
         return view('user.bundle_info', compact('bundle'));
     }
 
@@ -130,7 +132,7 @@ class UserController extends Controller
             'quantity' => $request->quantity
         ]);
 
-        return redirect()->route('user.book')->with('success', 'Bundle selected!');
+        return redirect()->route('user.bundle.customize')->with('success', 'Bundle selected!');
     }
 
     public function updateBundle(Request $request)
@@ -162,6 +164,7 @@ class UserController extends Controller
         $bundleData = session('bundle');
 
         $menuItems = [];
+        $selectedItems = collect();
         $total = 0;
         $bundle = null;
 
@@ -175,11 +178,20 @@ class UserController extends Controller
         }
 
         if ($bundleData) {
-            $bundle = Bundle::find($bundleData['id']);
+            $bundle = Bundle::findOrFail($bundleData['id']);
+
+            // load selected items safely
+            if (isset($bundleData['selections'])) {
+                $selectedItems = MenuItem::whereIn(
+                    'id',
+                    collect($bundleData['selections'])->flatten()
+                )->get();
+            }
+
             $total = $bundle->price_per_head * $bundleData['quantity'];
         }
 
-        return view('user.book', compact('menuItems', 'cart', 'total', 'bundle', 'bundleData'));
+        return view('user.book', compact('menuItems', 'cart', 'total', 'bundle', 'bundleData', 'selectedItems'));
     }
 
     public function storeBooking(Request $request)
@@ -188,16 +200,19 @@ class UserController extends Controller
             'event_type' => 'required',
             'event_date' => 'required|date',
             'guest_count' => 'required|integer|min:1',
+            'venue' => 'required|string|max:255',
         ]);
 
         $cart = session('cart', []);
-        $bundleId = session('bundle_id');
 
         $total = 0;
 
+
         // CASE 1: BUNDLE
-        if ($bundleId) {
-            $bundle = Bundle::findOrFail($bundleId);
+        $bundleData = session('bundle');
+
+        if ($bundleData) {
+            $bundle = Bundle::findOrFail($bundleData['id']);
             $total = $bundle->price_per_head * $request->guest_count;
         }
 
@@ -214,8 +229,9 @@ class UserController extends Controller
         // CREATE BOOKING
         $booking = Booking::create([
             'user_id' => Auth::id(),
-            'bundle_id' => $bundleId,
+            'bundle_id' => $bundleData['id'] ?? null,
             'event_type' => $request->event_type,
+            'venue' => $request->venue, 
             'event_date' => $request->event_date,
             'guest_count' => $request->guest_count,
             'status' => 'pending',
@@ -223,7 +239,7 @@ class UserController extends Controller
         ]);
 
         // SAVE ITEMS IF CUSTOM
-        if (!$bundleId) {
+        if (!$bundleData) {
             foreach ($cart as $menuItemId => $details) {
                 $menuItem = MenuItem::find($menuItemId);
 
@@ -236,18 +252,150 @@ class UserController extends Controller
             }
         }
 
+<<<<<<< HEAD
+=======
+        if ($bundleData && isset($bundleData['selections'])) {
+
+            foreach ($bundleData['selections'] as $items) {
+                foreach ($items as $itemId) {
+
+                    $menuItem = MenuItem::find($itemId);
+
+                    BookingItem::create([
+                        'booking_id' => $booking->id,
+                        'menu_item_id' => $itemId,
+                        'quantity' => 1,
+                        'price' => $menuItem->price,
+                    ]);
+                }
+            }
+        }
+>>>>>>> b82d2672b56b87ddb6302391635ebacae970ea54
 
         // CLEAR SESSION
         session()->forget('cart');
-        session()->forget('bundle_id');
+        session()->forget('bundle');
 
         return redirect()->route('user.home')->with('success', 'Booking created!');
     }
 
+<<<<<<< HEAD
     //PROFILE
     public function profile()
     {
         return view('user.profile');
+=======
+
+    public function inquiries($id = null)
+    {
+        $allInquiries = Inquiry::with('sender')
+            ->whereNull('parent_id')
+            ->whereHas('booking', function($q) {
+                $q->where('user_id', auth()->id());
+            })
+            ->latest()
+            ->get();
+
+        $selectedInquiry = null;
+
+        if ($id) {
+            $selectedInquiry = Inquiry::with(['sender', 'replies.sender', 'booking'])
+                ->findOrFail($id);
+        }
+
+        return view('user.inquiries', compact('allInquiries', 'selectedInquiry'));
+    } 
+
+    public function bookings()
+    {
+        $bookings = Booking::where('user_id', auth()->id())
+            ->orderBy('event_date', 'asc')
+            ->get()
+            ->groupBy(function ($booking) {
+                return Carbon::parse($booking->event_date)->toDateString(); // YYYY-MM-DD
+            })
+            ->mapWithKeys(function ($group, $date) {
+                return [
+                    Carbon::parse($date)->format('l, F j') => $group
+                ];
+            });
+
+        return view('user.bookings', compact('bookings'));
+    }
+
+    public function showBooking(Booking $booking)
+    {
+        $booking->load(['user', 'bundle', 'items']); // load relationships
+
+       $subtotal = 0;
+       $discColor = "red" ; 
+
+        foreach ($booking->items as $item) {
+            $subtotal += $item->price * $item->quantity;
+        }
+
+        $bundleTotal = null;
+        $discount = 0;
+
+        if ($booking->bundle) {
+            $bundleTotal = $booking->bundle->price_per_head * $booking->guest_count;
+            $discount = $subtotal - $bundleTotal;
+
+            if($discount < 0){ 
+                $discount *= -1 ;
+                $discColor = "green" ;
+            } else { 
+                $discColor = "red" ;
+            }
+        }
+
+        return view('user.booking_show', compact(
+            'booking',
+            'subtotal',
+            'bundleTotal',
+            'discount', 
+            'discColor'
+        ));
+    }
+
+
+
+    public function customizeBundle()
+    {
+        $bundleData = session('bundle');
+
+        if (!$bundleData) {
+            return redirect()->route('user.bundles')->with('error', 'Select a bundle first.');
+        }
+
+        $bundle = Bundle::with('requirements.category.menuItems')
+            ->findOrFail($bundleData['id']);
+
+        return view('user.bundle_customize', compact('bundle', 'bundleData'));
+    }
+
+    public function saveBundleSelection(Request $request)
+    {
+        $bundleData = session('bundle');
+
+        $bundle = Bundle::with('requirements.category')
+            ->findOrFail($bundleData['id']);
+
+        foreach ($bundle->requirements as $req) {
+            $selected = $request->selections[$req->category_id] ?? [];
+
+            if (count($selected) != $req->required_quantity) {
+                return back()->with('error',
+                    "Select exactly {$req->required_quantity} items for {$req->category->name}");
+            }
+        }
+
+        // SAVE selections
+        $bundleData['selections'] = $request->selections;
+        session()->put('bundle', $bundleData);
+
+        return redirect()->route('user.book')->with('success', 'Bundle customized!');
+>>>>>>> b82d2672b56b87ddb6302391635ebacae970ea54
     }
 
 }

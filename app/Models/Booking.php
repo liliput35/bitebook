@@ -10,6 +10,7 @@ class Booking extends Model
         'user_id',
         'bundle_id',
         'event_type',
+        'venue',
         'event_date',
         'guest_count',
         'status',
