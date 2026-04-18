@@ -11,25 +11,39 @@
 </main> 
 
 <script>
-    function toggleEdit(section) {
-        let fields = document.querySelectorAll(`#${section}Fields .input-field`);
+   function toggleEdit(section) {
+        let container = document.getElementById(`${section}Fields`);
+        let fields = container.querySelectorAll('.input-field');
         let button = document.getElementById(section + "Btn");
+        let form = document.querySelector('form'); 
 
         let isDisabled = fields[0].disabled;
 
-        console.log("clicked") ;
-
-        fields.forEach(input => {
-            input.disabled = !isDisabled;
-        });
-
         if (isDisabled) {
+            // ENABLE inputs
+            fields.forEach(input => {
+                input.disabled = false;
+
+                if (input.type === "password") {
+                    input.value = "";
+                }
+            });
+
             button.innerText = "Save Changes";
-            button.classList.add("border-2", "border-dark-gray", "text-biteblack", "text-[1rem]", "rounded-lg", "px-2");
+            button.classList.add(
+                "border-2",
+                "border-dark-gray",
+                "text-biteblack",
+                "text-[1rem]",
+                "rounded-lg",
+                "px-2"
+            );
+
         } else {
-            button.classList.remove("border-2", "border-dark-gray", "text-biteblack", "text-[1rem]", "rounded-lg", "p-2");
-            button.innerHTML = `<img src="{{asset('images/black-edit-icon.png')}}" alt="" class="max-w-[40px] mt-4"> `;
+            fields.forEach(input => input.disabled = false);
+
+            form.submit();
         }
-    }
+    }   
 </script>
 

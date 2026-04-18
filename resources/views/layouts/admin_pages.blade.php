@@ -114,6 +114,7 @@
         });
 
         if (isDisabled) {
+            fields.forEach(input => input.disabled = false);
             button.innerText = "Save Changes";
             button.classList.add(
                 "border-2",
@@ -124,7 +125,8 @@
                 "px-2"
             );
         } else {
-            form.submit(); // ✅ SAFE submit
+            fields.forEach(input => input.disabled = false);
+            form.submit();
         }
     }
 

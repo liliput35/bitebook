@@ -170,32 +170,37 @@ class AdminController extends Controller
     //PROFILE
     public function profile()
     {
-        return view('admin.profile');
+        $business = auth()->user()->business;
+
+        return view('admin.profile', compact('business'));
     }
 
     public function updateProfile(Request $request)
     {
-    $request->validate([
-        'first_name' => 'required',
-        'last_name' => 'required',
-        'username' => 'required',
-        'password' => 'nullable|min:6',
-    ]);
 
-    $user = auth()->user();
+        $request->validate([
+            'first_name' => 'required',
+            'last_name' => 'nullable|string',
+            'username' => 'required',
+            'password' => 'nullable|min:6',
+        ]);
 
-    // combine name safely
-    $user->name = trim($request->first_name . ' ' . $request->last_name);
+        $user = auth()->user();
 
-    $user->username = $request->username;
+        // combine name safely
+        $user->name = trim(
+            $request->first_name . 
+            ($request->last_name ? ' ' . $request->last_name : '')
+        );
+        $user->username = $request->username;
 
-    if (!empty($request->password)) {
-        $user->password = Hash::make($request->password);
-    }
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
 
-    $user->save();
+        $user->save();
 
-    return back()->with('success', 'Profile updated successfully!');
+        return back()->with('success', 'Profile updated successfully!');
     }
 
     public function confirmBooking($id)

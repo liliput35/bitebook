@@ -35,13 +35,13 @@
                     <div class="lg:flex lg:gap-6">
                         <div class="mb-2 lg:w-1/2">
                             <label class="font-medium text-light-gray">Company Name</label><br>
-                            <input disabled class="input-field border border-light-gray rounded-lg w-full p-2" type="text" name="company_name" value="BiteBook" required>
+                            <input disabled class="input-field border border-light-gray rounded-lg w-full p-2" type="text" name="company_name" value="{{ auth()->user()->comany_name}}">
                             @error('name') <span>{{ $message }}</span> @enderror
                         </div>
                         
                         <div class="mb-2 lg:w-1/2">
                             <label class="font-medium text-light-gray">Contact Person</label><br>
-                            <input disabled class="input-field border border-light-gray rounded-lg p-2 lg:w-full" type="text" name="contact_person" value="Mike Wilson" required>
+                            <input disabled class="input-field border border-light-gray rounded-lg p-2 lg:w-full" type="text" name="contact_person" value="{{ auth()->user()->contact_person}}">
                             @error('price') <span>{{ $message }}</span> @enderror
                         </div> 
                     </div>
@@ -50,20 +50,20 @@
                     <div class="lg:flex lg:gap-6">                
                         <div class="mb-2 lg:w-1/2">
                             <label class="font-medium text-light-gray">Company Email</label><br>
-                            <input disabled class="input-field border border-light-gray rounded-lg p-2 lg:w-full" type="text" name="company_email" value="bitebook@gmail.com"required>
+                            <input disabled class="input-field border border-light-gray rounded-lg p-2 lg:w-full" type="text" name="company_email" value="{{ auth()->user()->company_email}}">
                             @error('price') <span>{{ $message }}</span> @enderror
                         </div> 
                         
                         <div class="mb-2 lg:w-1/2">
                             <label class="font-medium text-light-gray">Company Contact Number</label><br>
-                            <input disabled class="input-field border border-light-gray rounded-lg p-2 lg:w-full" type="text" name="company_contact_number" value="09-XXX-XXXX" required>
+                            <input disabled class="input-field border border-light-gray rounded-lg p-2 lg:w-full" type="text" name="company_contact_number" value="{{ auth()->user()->company_contact_number}}">
                             @error('price') <span>{{ $message }}</span> @enderror
                         </div> 
                     </div>  
 
                     <div class="mb-2 lg:w-1/2">
-                        <label class="font-medium text-light-gray">PRICE PER HEAD</label><br>
-                        <input disabled class="input-field border border-light-gray rounded-lg p-2 lg:w-full" type="text" name="price_per_head" required>
+                        <label class="font-medium text-light-gray">Location</label><br>
+                        <input disabled class="input-field border border-light-gray rounded-lg p-2 lg:w-full" type="text" name="{{ auth()->user()->location}}" >
                         @error('price') <span>{{ $message }}</span> @enderror
                     </div>                     
 
@@ -108,7 +108,7 @@
                     
                     <div class="mb-2 lg:w-1/2">
                         <label class="font-medium text-light-gray">Password</label><br>
-                        <input disabled class="input-field border border-light-gray rounded-lg p-2 lg:w-full" type="password" name="password">
+                        <input disabled class="input-field border border-light-gray rounded-lg p-2 lg:w-full" type="password" value="******" name="password">
                         @error('price') <span>{{ $message }}</span> @enderror
                     </div>          
 
