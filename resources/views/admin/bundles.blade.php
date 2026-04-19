@@ -40,9 +40,9 @@
             <div class="top-row h-[250px] bg-red-300">
             </div>
             <div class="bot-row px-4">
-                <h4 class="font-medium text-[1.5em] my-1">{{ $bundle->name }}</h4>
+                <h4 class="font-medium text-[1.5em] my-1 truncate">{{ $bundle->name }}</h4>
                 <p class="font-medium text-dark-green mb-1 text-[1.25em]">P {{ $bundle->price_per_head }}/head</p>
-                <p class="mb-4">{{ $bundle->description }}</p>
+                <p class="mb-4 truncate">{{ $bundle->description }}</p>
                 <div class="flex justify-end">
                     <a href="{{ route('admin.bundles.edit', $bundle->id) }}" class=""><img src="{{asset('images/edit-icon.png')}}" alt="" class="max-w-[40px]"></a>
                 </div>
