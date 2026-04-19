@@ -12,7 +12,6 @@ class BusinessInfo extends Model
     protected $table = 'business_info';
 
     protected $fillable = [
-        'user_id',
         'company_name',
         'contact_person',
         'company_email',

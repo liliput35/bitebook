@@ -66,8 +66,34 @@
                 
                 {{-- ORDER HISTORY CARD --}}
                 <div class="bg-white shadow-lg p-4 rounded-lg lg:w-1/3">
-                    <h1 class="text-[1.50rem] font-bold text-dark-green">ORDER HISTORY</h1>
+                    <h1 class="text-[1.50rem] font-bold text-dark-green pb-4">ORDER HISTORY</h1>
 
+                    @forelse($bookings as $booking)
+                        <a href="{{ route('user.bookings.show', $booking->id) }}">
+                        <div class="flex justify-between items-start border-b py-2">
+
+                            <div>
+                                <p class="font-medium text-biteblack">
+                                    {{ $booking->event_type }}
+                                </p>
+
+                                <p class="text-sm text-dark-green-500">
+                                    {{ \Carbon\Carbon::parse($booking->event_date)->format('M d, Y') }}
+                                </p>
+                            </div>
+
+                            <div class="text-right">
+                                <p class="font-medium text-dark-green">
+                                    ₱ {{ number_format($booking->total_price, 2) }}
+                                </p>
+                            </div>
+                        </div>
+
+                    @empty
+
+                        <p class="font-medium text-dark-gray"></p>
+
+                    @endforelse
 
                 </div>
             </div>

@@ -206,15 +206,15 @@ class DatabaseSeeder extends Seeder
                 'status' => 'new',
             ]);
 
-            //BUSINESS INFO
+        }
+
+        //BUSINESS INFO
             BusinessInfo::create([
-                'user_id' => 1,
                 'company_name' => 'BiteBook',
                 'contact_person' => 'Mike Wilson',
                 'company_email' => 'bitebook@gmail.com',
                 'company_contact_number' => '09123456789',
                 'location' => 'La Salle Avenue, Bacolod City',
             ]);  
-        }
     }
 }

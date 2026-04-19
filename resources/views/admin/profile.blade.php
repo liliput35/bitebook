@@ -35,13 +35,13 @@
                     <div class="lg:flex lg:gap-6">
                         <div class="mb-2 lg:w-1/2">
                             <label class="font-medium text-light-gray">Company Name</label><br>
-                            <input disabled class="input-field border border-light-gray rounded-lg w-full p-2" type="text" name="company_name" value="{{ auth()->user()->comany_name}}">
+                            <input disabled class="input-field border border-light-gray rounded-lg w-full p-2" type="text" name="company_name" value="{{ $business->company_name ?? '' }}">
                             @error('name') <span>{{ $message }}</span> @enderror
                         </div>
                         
                         <div class="mb-2 lg:w-1/2">
                             <label class="font-medium text-light-gray">Contact Person</label><br>
-                            <input disabled class="input-field border border-light-gray rounded-lg p-2 lg:w-full" type="text" name="contact_person" value="{{ auth()->user()->contact_person}}">
+                            <input disabled class="input-field border border-light-gray rounded-lg p-2 lg:w-full" type="text" name="contact_person" value="{{ $business->contact_person  ?? ''}}">
                             @error('price') <span>{{ $message }}</span> @enderror
                         </div> 
                     </div>
@@ -50,20 +50,20 @@
                     <div class="lg:flex lg:gap-6">                
                         <div class="mb-2 lg:w-1/2">
                             <label class="font-medium text-light-gray">Company Email</label><br>
-                            <input disabled class="input-field border border-light-gray rounded-lg p-2 lg:w-full" type="text" name="company_email" value="{{ auth()->user()->company_email}}">
+                            <input disabled class="input-field border border-light-gray rounded-lg p-2 lg:w-full" type="text" name="company_email" value="{{ $business->company_email ?? '' }}">
                             @error('price') <span>{{ $message }}</span> @enderror
                         </div> 
                         
                         <div class="mb-2 lg:w-1/2">
                             <label class="font-medium text-light-gray">Company Contact Number</label><br>
-                            <input disabled class="input-field border border-light-gray rounded-lg p-2 lg:w-full" type="text" name="company_contact_number" value="{{ auth()->user()->company_contact_number}}">
+                            <input disabled class="input-field border border-light-gray rounded-lg p-2 lg:w-full" type="text" name="company_contact_number" value="{{ $business->company_contact_number  ?? ''}}">
                             @error('price') <span>{{ $message }}</span> @enderror
                         </div> 
                     </div>  
 
                     <div class="mb-2 lg:w-1/2">
                         <label class="font-medium text-light-gray">Location</label><br>
-                        <input disabled class="input-field border border-light-gray rounded-lg p-2 lg:w-full" type="text" name="{{ auth()->user()->location}}" >
+                        <input disabled class="input-field border border-light-gray rounded-lg p-2 lg:w-full" type="text" name="location" value="{{ $business->location ?? ''}}" >
                         @error('price') <span>{{ $message }}</span> @enderror
                     </div>                     
 

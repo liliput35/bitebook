@@ -14,9 +14,6 @@ return new class extends Migration
         Schema::create('business_info', function (Blueprint $table) {
             $table->id();
 
-            // link to user (admin owner)
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-
             $table->string('company_name');
             $table->string('contact_person');
             $table->string('company_email');

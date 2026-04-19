@@ -353,7 +353,12 @@ class UserController extends Controller
         //PROFILE
     public function profile()
     {
-        return view('user.profile');
+        $bookings = Booking::where('user_id', auth()->id())
+            ->latest()
+            ->take(5)
+            ->get();
+
+        return view('user.profile', compact('bookings'));
     }
 
     public function updateProfile(Request $request)

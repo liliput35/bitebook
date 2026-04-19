@@ -104,17 +104,13 @@
         let container = document.getElementById(`${section}Fields`);
         let fields = container.querySelectorAll('.input-field');
         let button = document.getElementById(section + "Btn");
-
         let form = document.querySelector('form'); 
 
         let isDisabled = fields[0].disabled;
 
-        fields.forEach(input => {
-            input.disabled = !isDisabled;
-        });
-
         if (isDisabled) {
             fields.forEach(input => input.disabled = false);
+
             button.innerText = "Save Changes";
             button.classList.add(
                 "border-2",
@@ -125,8 +121,11 @@
                 "px-2"
             );
         } else {
-            fields.forEach(input => input.disabled = false);
-            form.submit();
+            document.querySelectorAll('.input-field').forEach(input => {
+                input.disabled = false;
+            });
+
+            form.submit(); 
         }
     }
 
