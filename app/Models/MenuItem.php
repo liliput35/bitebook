@@ -25,4 +25,11 @@ class MenuItem extends Model
     {
         return $this->hasMany(BookingItem::class);
     }
+
+    public function getImageUrlAttribute()
+    {
+        return $this->image
+            ? asset('storage/' . $this->image)
+            : asset('images/default.png'); // fallback
+    }
 }

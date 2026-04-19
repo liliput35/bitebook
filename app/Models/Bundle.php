@@ -22,4 +22,11 @@ class Bundle extends Model
     {
         return $this->hasMany(Booking::class);
     }
+
+    public function getImageUrlAttribute()
+    {
+        return $this->image
+            ? asset('storage/' . $this->image)
+            : asset('images/default.png'); // fallback
+    }
 }

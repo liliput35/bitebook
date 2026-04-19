@@ -37,7 +37,7 @@
 
         @forelse($menuItems as $item)
         <div class="item mb-6 bg-white rounded-xl shadow-lg overflow-hidden pb-4">
-            <div class="top-row h-[250px] bg-red-300 flex justify-end">
+            <div class="top-row h-[250px] bg-cover bg-center flex justify-end" style="background-image: url('{{ $item->image_url}}')">
                 <p class="mr-4 mt-4 bg-light-gray text-white h-fit px-3 py-1 rounded-full">{{ $item->category->name ?? 'N/A' }}</p>
             </div>
             <div class="bot-row px-4">

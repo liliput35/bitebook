@@ -37,7 +37,7 @@
 
         @forelse($bundles as $bundle)
         <div class="item mb-6 bg-white rounded-xl shadow-lg overflow-hidden pb-4">
-            <div class="top-row h-[250px] bg-red-300">
+            <div class="top-row h-[250px] bg-cover bg-center" style="background-image: url('{{ $bundle->image_url}}')">
             </div>
             <div class="bot-row px-4">
                 <h4 class="font-medium text-[1.5em] my-1 truncate">{{ $bundle->name }}</h4>

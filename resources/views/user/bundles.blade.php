@@ -21,7 +21,7 @@
 
         @forelse($bundles as $item)
         <div class="item mb-6 bg-white rounded-xl shadow-lg overflow-hidden pb-4">
-            <div class="top-row h-[250px] bg-red-300 flex justify-end">
+            <div class="top-row h-[250px] bg-cover bg-center flex justify-end" style="background-image: url('{{ $item->image_url}}')">
             </div>
             <div class="bot-row px-4">
                 <h4 class="font-medium text-[1.5em] my-1 truncate">{{ $item->name }}</h4>
