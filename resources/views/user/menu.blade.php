@@ -25,9 +25,9 @@
                 <p class="mr-4 mt-4 bg-light-gray text-white h-fit px-3 py-1 rounded-full">{{ $item->category->name ?? 'N/A' }}</p>
             </div>
             <div class="bot-row px-4">
-                <h4 class="font-medium text-[1.5em] my-1">{{ $item->name }}</h4>
+                <h4 class="font-medium text-[1.5em] my-1 truncate">{{ $item->name }}</h4>
                 <p class="font-medium text-dark-green mb-1 text-[1.25em]">P {{ $item->price }}</p>
-                <p class="mb-4">{{ $item->description }}</p>
+                <p class="mb-4 truncate">{{ $item->description }}</p>
                 <div class="flex justify-end">
                     <a href="{{ route('user.menu.item', $item->id) }}" class=""><img src="{{asset('images/add-icon.png')}}" alt="" class="max-w-[40px]"></a>
                 </div>
