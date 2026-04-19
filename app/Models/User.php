@@ -35,4 +35,5 @@ class User extends Authenticatable
     {
         return $this->hasMany(Inquiry::class, 'sender_id');
     }
+
 }

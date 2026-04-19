@@ -9,9 +9,10 @@
         <a href="{{ route('user.book') }}">Book</a> 
         <a href="{{ route('user.inquiries') }}">Inquiries</a> 
         <a href="{{ route('user.cart') }}">Cart</a> 
+
     </div> 
 
-    <a href=""><img src="{{asset('images/profile-icon.png')}}" alt=""></a>
+    <a href="{{ route('user.profile') }}"><img src="{{asset('images/profile-icon.png')}}" alt=""></a>
 </div>
 </div>
 

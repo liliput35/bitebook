@@ -9,7 +9,7 @@
         <a href="{{ route('admin.bookings') }}">Booking</a>
     </div> 
 
-    <a href=""><img src="{{asset('images/profile-icon.png')}}" alt=""></a>
+    <a href="{{ route('admin.profile') }}"><img src="{{asset('images/profile-icon.png')}}" alt=""></a>
 </div>
 </div>
 

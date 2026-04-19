@@ -63,6 +63,8 @@ Route::middleware(['auth', 'user'])->group(function () {
     Route::get('/book', [UserController::class, 'book'])->name('user.book');
     Route::post('/book', [UserController::class, 'storeBooking'])->name('user.book.store');
 
+    Route::get('/profile', [UserController::class, 'profile'])->name('user.profile');
+    Route::put('/profile/update', [UserController::class, 'updateProfile'])->name('user.profile.update');
     //Route::get('/inquiries', [UserController::class, 'home'])->name('user.inquiries');
 
     Route::get('/inquiries/{id?}', [UserController::class, 'inquiries'])
@@ -122,6 +124,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/bookings/{booking}', [AdminController::class, 'showBooking'])->name('admin.bookings.show');
     Route::get('/bookings/{booking}/edit', [AdminController::class, 'editBooking'])
     ->name('admin.bookings.edit');
+
+    //PROFILE
+    Route::get('/profile', [AdminController::class, 'profile'])->name('admin.profile');
+    Route::put('/profile/update', [AdminController::class, 'updateProfile'])->name('admin.profile.update');
 
     Route::post('/bookings/{booking}/update', [AdminController::class, 'updateBooking'])
         ->name('admin.bookings.update'); 

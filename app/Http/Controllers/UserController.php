@@ -13,6 +13,7 @@ use App\Models\Inquiry;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -347,6 +348,45 @@ class UserController extends Controller
             'discount', 
             'discColor'
         ));
+    }
+
+        //PROFILE
+    public function profile()
+    {
+        $bookings = Booking::where('user_id', auth()->id())
+            ->latest()
+            ->take(5)
+            ->get();
+
+        return view('user.profile', compact('bookings'));
+    }
+
+    public function updateProfile(Request $request)
+    {
+
+        $request->validate([
+            'first_name' => 'required',
+            'last_name' => 'nullable|string',
+            'username' => 'required',
+            'password' => 'nullable|min:6',
+        ]);
+
+        $user = auth()->user();
+
+        // combine name safely
+        $user->name = trim(
+            $request->first_name . 
+            ($request->last_name ? ' ' . $request->last_name : '')
+        );
+        $user->username = $request->username;
+
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
+
+        $user->save();
+
+        return back()->with('success', 'Profile updated successfully!');
     }
 
 
