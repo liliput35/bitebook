@@ -12,6 +12,7 @@ use App\Models\BundleRequirement;
 use App\Models\Booking;
 use App\Models\BookingItem;
 use App\Models\Inquiry;
+use App\Models\BusinessInfo;
 use Carbon\Carbon;
 
 class DatabaseSeeder extends Seeder
@@ -204,6 +205,16 @@ class DatabaseSeeder extends Seeder
                 'message' => 'Can we change one dish?',
                 'status' => 'new',
             ]);
+
         }
+
+        //BUSINESS INFO
+            BusinessInfo::create([
+                'company_name' => 'BiteBook',
+                'contact_person' => 'Mike Wilson',
+                'company_email' => 'bitebook@gmail.com',
+                'company_contact_number' => '09123456789',
+                'location' => 'La Salle Avenue, Bacolod City',
+            ]);  
     }
 }

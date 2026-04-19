@@ -10,8 +10,10 @@ use App\Models\Booking;
 use App\Models\Bundle;
 use App\Models\Inquiry;
 use App\Models\BookingItem;
+use App\Models\BusinessInfo;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 
 class AdminController extends Controller
@@ -164,6 +166,62 @@ class AdminController extends Controller
             'discount', 
             'discColor'
         ));
+    }
+
+    //PROFILE
+    public function profile()
+    {
+        $business = BusinessInfo::first();
+
+        return view('admin.profile', compact('business'));
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $request->validate([
+            'first_name' => 'required',
+            'last_name' => 'nullable|string',
+            'username' => 'required',
+            'password' => 'nullable|min:6',
+
+            //BUSINESS FIELDS
+            'company_name' => 'required',
+            'contact_person' => 'required',
+            'company_email' => 'required|email',
+            'company_contact_number' => 'required',
+            'location' => 'required',
+        ]);
+
+        $user = auth()->user();
+
+        // combine name safely
+        $user->name = trim(
+            $request->first_name . 
+            ($request->last_name ? ' ' . $request->last_name : '')
+        );
+        $user->username = $request->username;
+
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
+
+        $user->save();
+
+        $business = BusinessInfo::first();
+
+        if (!$business) {
+            $business = BusinessInfo::create([]);
+        }
+
+        $business->update([
+            'company_name' => $request->company_name,
+            'contact_person' => $request->contact_person,
+            'company_email' => $request->company_email,
+            'company_contact_number' => $request->company_contact_number,
+            'location' => $request->location,
+        ]);
+        
+        return back()->with('success', 'Profile updated successfully!');
     }
 
     public function confirmBooking($id)
