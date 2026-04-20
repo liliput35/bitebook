@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\MenuItem;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class MenuItemController extends Controller
 {
@@ -25,8 +26,9 @@ class MenuItemController extends Controller
         ]);
 
         $imagePath = null;
+
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('menu_images', 'public');
+            $imagePath = $request->file('image')->store('menu', 'public'); // 
         }
 
         MenuItem::create([
@@ -43,6 +45,10 @@ class MenuItemController extends Controller
 
     public function destroy(MenuItem $menuItem)
     {
+        if ($menuItem->image && Storage::disk('public')->exists($menuItem->image)) {
+            Storage::disk('public')->delete($menuItem->image);
+        }
+        
         $menuItem->delete();
         return redirect()->route('admin.menu')->with('success', 'Menu item deleted.');
     }
@@ -61,11 +67,17 @@ class MenuItemController extends Controller
             'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'category_id' => 'required|exists:categories,id',
         ]);
-
         $imagePath = $menuItem->image;
 
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('menu_images', 'public');
+
+            //  DELETE OLD IMAGE
+            if ($menuItem->image && Storage::disk('public')->exists($menuItem->image)) {
+                Storage::disk('public')->delete($menuItem->image);
+            }
+
+            // SAVE NEW IMAGE
+            $imagePath = $request->file('image')->store('menu', 'public');
         }
 
         $menuItem->update([

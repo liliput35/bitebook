@@ -73,77 +73,110 @@ class DatabaseSeeder extends Seeder
         }
 
         // ============================
-        // MENU ITEMS (2 PER CATEGORY)
+        // MENU ITEMS (CUSTOM)
         // ============================
-        foreach ($categoryMap as $name => $id) {
-            MenuItem::create([
-                'name' => "$name Special A",
-                'description' => 'Sample description',
-                'price' => rand(400, 1500),
-                'category_id' => $id,
-                'is_active' => true
-            ]);
 
+        $menuItemsData = [
+            ['name' => 'Roast Beef w/ Mashed Potatoes', 'cat' => 'Beef', 'price' => 1200, 'img' => 'roast-beef.png'],
+            ['name' => 'Chicken Relleno', 'cat' => 'Chicken', 'price' => 950, 'img' => 'chicken-relleno.png'],
+            ['name' => 'Paella', 'cat' => 'Rice', 'price' => 1550, 'img' => 'paella.png'],
+            ['name' => 'Lasagna', 'cat' => 'Noodles/Pasta', 'price' => 1100, 'img' => 'lasagna.png'],
+            ['name' => 'Waldorf Salad', 'cat' => 'Salad', 'price' => 650, 'img' => 'waldorf-salad.png'],
+            ['name' => 'Carbonara', 'cat' => 'Noodles/Pasta', 'price' => 900, 'img' => 'carbonara.png'],
+            ['name' => 'Chicken Alfredo', 'cat' => 'Noodles/Pasta', 'price' => 980, 'img' => 'chicken-alfredo.png'],
+            ['name' => 'Yang Chow Rice', 'cat' => 'Rice', 'price' => 700, 'img' => 'yang-chow.png'],
+        ];
+
+        foreach ($menuItemsData as $item) {
             MenuItem::create([
-                'name' => "$name Special B",
+                'name' => $item['name'],
                 'description' => 'Sample description',
-                'price' => rand(400, 1500),
-                'category_id' => $id,
+                'price' => $item['price'],
+                'image' => 'menu/' . $item['img'], // IMPORTANT
+                'category_id' => $categoryMap[$item['cat']],
                 'is_active' => true
             ]);
         }
 
         // ============================
-        // BUNDLES (3 TOTAL)
+        // BUNDLES (8 TOTAL)
         // ============================
-        $bundle1 = Bundle::create([
-            'name' => 'Classic Wedding Reception',
-            'description' => 'Standard full-course meal',
-            'price_per_head' => 600
-        ]);
 
-        $bundle2 = Bundle::create([
-            'name' => 'Premium Celebration Package',
-            'description' => 'More premium dishes + seafood',
-            'price_per_head' => 850
-        ]);
+        $bundlesData = [
+            ['name' => 'Classic Wedding Reception', 'price' => 600, 'img' => 'classic-wedding-reception.png'],
+            ['name' => 'Grand Celebration', 'price' => 900, 'img' => 'grand-celebration.png'],
+            ['name' => 'Family Reunion', 'price' => 550, 'img' => 'family-reunion.png'],
+            ['name' => 'Anniversary Dinner', 'price' => 650, 'img' => 'anniversary-dinner.png'],
+            ['name' => 'Debut Party', 'price' => 700, 'img' => 'debut-party.png'],
+            ['name' => 'Packed Meal', 'price' => 250, 'img' => 'packed-meal.png'],
+            ['name' => 'Funeral Reception', 'price' => 500, 'img' => 'funeral-reception.png'],
+            ['name' => 'Team Building Feast', 'price' => 750, 'img' => 'team-building.png'],
+        ];
 
-        $bundle3 = Bundle::create([
-            'name' => 'Budget Party Package',
-            'description' => 'Simple but complete meal set',
-            'price_per_head' => 450
-        ]);
+        $bundleObjects = [];
+
+        foreach ($bundlesData as $b) {
+            $bundleObjects[$b['name']] = Bundle::create([
+                'name' => $b['name'],
+                'description' => 'Sample bundle description',
+                'price_per_head' => $b['price'],
+                'image' => 'bundles/' . $b['img'] // IMPORTANT
+            ]);
+        }
 
         // ============================
         // BUNDLE REQUIREMENTS
         // ============================
 
-        // Classic
+        // Classic Wedding
         foreach (['Rice','Noodles/Pasta','Beef','Chicken','Salad','Dessert'] as $cat) {
             BundleRequirement::create([
-                'bundle_id' => $bundle1->id,
+                'bundle_id' => $bundleObjects['Classic Wedding Reception']->id,
                 'category_id' => $categoryMap[$cat],
                 'required_quantity' => 1
             ]);
         }
 
-        // Premium (more items)
+        // Grand Celebration
         foreach (['Rice','Seafood','Beef','Chicken','Soup','Dessert'] as $cat) {
             BundleRequirement::create([
-                'bundle_id' => $bundle2->id,
+                'bundle_id' => $bundleObjects['Grand Celebration']->id,
                 'category_id' => $categoryMap[$cat],
                 'required_quantity' => 1
             ]);
         }
 
-        // Budget
+        // Family Reunion
         foreach (['Rice','Chicken','Pork','Dessert'] as $cat) {
             BundleRequirement::create([
-                'bundle_id' => $bundle3->id,
+                'bundle_id' => $bundleObjects['Family Reunion']->id,
                 'category_id' => $categoryMap[$cat],
                 'required_quantity' => 1
             ]);
         }
+
+        // Reuse simple sets for others
+        foreach (['Anniversary Dinner','Debut Party','Funeral Reception','Team Building Feast'] as $bundleName) {
+            foreach (['Rice','Chicken','Dessert'] as $cat) {
+                BundleRequirement::create([
+                    'bundle_id' => $bundleObjects[$bundleName]->id,
+                    'category_id' => $categoryMap[$cat],
+                    'required_quantity' => 1
+                ]);
+            }
+        }
+
+        // Packed Meal (simple)
+        foreach (['Rice','Chicken'] as $cat) {
+            BundleRequirement::create([
+                'bundle_id' => $bundleObjects['Packed Meal']->id,
+                'category_id' => $categoryMap[$cat],
+                'required_quantity' => 1
+            ]);
+        }
+
+
+
 
         // ============================
         // BOOKINGS (MIXED)
@@ -161,7 +194,7 @@ class DatabaseSeeder extends Seeder
                 'venue' => 'Hall A',
                 'guest_count' => rand(20, 100),
                 'status' => 'pending',
-                'bundle_id' => $bundle1->id,
+                'bundle_id' => $bundleObjects['Classic Wedding Reception']->id,
                 'total_price' => 0, // optional
             ]);
 

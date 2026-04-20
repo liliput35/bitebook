@@ -10,6 +10,7 @@ class Bundle extends Model
         'name',
         'description',
         'price_per_head',
+        'image',
     ];
 
     // Relationships
