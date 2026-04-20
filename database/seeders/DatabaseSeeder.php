@@ -85,6 +85,17 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Carbonara', 'cat' => 'Noodles/Pasta', 'price' => 900, 'img' => 'carbonara.png'],
             ['name' => 'Chicken Alfredo', 'cat' => 'Noodles/Pasta', 'price' => 980, 'img' => 'chicken-alfredo.png'],
             ['name' => 'Yang Chow Rice', 'cat' => 'Rice', 'price' => 700, 'img' => 'yang-chow.png'],
+            ['name' => 'Beef Brisket', 'cat' => 'Beef', 'price' => 1500, 'img' => 'beef-brisket.jpg'],
+            ['name' => 'Buffalo Wings', 'cat' => 'Chicken', 'price' => 700, 'img' => 'buffalo-wings.jpg'],
+            ['name' => 'Caesar Salad', 'cat' => 'Salad', 'price' => 500, 'img' => 'caesar-salad.jpg'],
+            ['name' => 'Chocolate Cake', 'cat' => 'Dessert', 'price' => 800, 'img' => 'chocolate-cake.jpg'],
+            ['name' => 'Leche Flan', 'cat' => 'Dessert', 'price' => 400, 'img' => 'leche-flan.jpg'],
+            ['name' => 'Baby Back Ribs', 'cat' => 'Pork', 'price' => 1200, 'img' => 'ribs.jpg'],
+            ['name' => 'Pulled Pork', 'cat' => 'Pork', 'price' => 1000, 'img' => 'pulled-pork.jpg'],
+            ['name' => 'Fish and Chips', 'cat' => 'Seafood', 'price' => 800, 'img' => 'fish-chips.jpg'],
+            ['name' => 'Seared Salmon', 'cat' => 'Seafood', 'price' => 1300, 'img' => 'salmon.jpg'],
+            ['name' => 'French Onion Soup', 'cat' => 'Soup', 'price' => 600, 'img' => 'french-onion-soup.jpg'],
+            ['name' => 'Chicken Noodle Soup', 'cat' => 'Soup', 'price' => 1400, 'img' => 'chicken-noodle-soup.jpg'],
         ];
 
         foreach ($menuItemsData as $item) {
