@@ -44,7 +44,7 @@
         @endforeach
 
         <button class="bg-dark-green text-white px-6 py-2 rounded">
-            Save Changes
+            Save Change
         </button>
     </form>
 

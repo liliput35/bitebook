@@ -94,7 +94,7 @@ class AdminController extends Controller
         $totalMenuItems = MenuItem::all()->count() ;
         $menuItems  = MenuItem::with('category')->take(4)->get();
         $categories = Category::all();
-        $bundles  = Bundle::all();
+        $bundles  = Bundle::all()->take(4);
         $totalBundles = Bundle::all()->count() ;
         return view('admin.management', compact('totalMenuItems', 'menuItems', 'categories', 'bundles', 'totalBundles'));
     }

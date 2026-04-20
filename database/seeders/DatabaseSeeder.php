@@ -39,14 +39,14 @@ class DatabaseSeeder extends Seeder
         User::create([
             'name' => 'Mia Chua',
             'username' => 'mia',
-            'password' => Hash::make('password123456'),
+            'password' => Hash::make('123456'),
             'role' => 'user',
         ]);
 
         User::create([
             'name' => 'Erika Jaud',
             'username' => 'erika',
-            'password' => Hash::make('password123456'),
+            'password' => Hash::make('123456'),
             'role' => 'user',
         ]);
 

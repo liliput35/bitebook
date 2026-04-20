@@ -8,6 +8,12 @@
 
     <h1 class="text-2xl font-bold mt-6">Edit Booking</h1>
 
+    @if(session('error'))
+        <div class="bg-red-100 text-red-700 p-2 rounded my-4">
+            {{ session('error') }}
+        </div>
+    @endif
+
     <form action="{{ route('admin.bookings.update', $booking->id) }}" method="POST">
         @csrf
 
