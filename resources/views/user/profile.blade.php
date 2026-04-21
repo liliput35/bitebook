@@ -82,9 +82,23 @@
                                 </p>
                             </div>
 
+                            @php
+                                $deliveryFee = 500;
+                                $total = 0 + $deliveryFee;
+
+                                foreach ($booking->items as $item) {
+                                    $total += $item->price * $item->quantity;
+                                }
+
+                                if ($booking->bundle) {
+                                    $total = $booking->bundle->price_per_head * $booking->guest_count + 500 ;
+                                }
+
+                            @endphp
+
                             <div class="text-right">
                                 <p class="font-medium text-dark-green">
-                                    ₱ {{ number_format($booking->total_price, 2) }}
+                                    ₱ {{ number_format($total, 2) }}
                                 </p>
                             </div>
                         </div>

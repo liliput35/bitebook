@@ -184,7 +184,7 @@ class AdminController extends Controller
         $request->validate([
             'first_name' => 'required',
             'last_name' => 'nullable|string',
-            'username' => 'required',
+            'username' => 'required|unique:users,username,' . auth()->id(),
             'password' => 'nullable|min:6',
 
             //BUSINESS FIELDS
@@ -202,13 +202,14 @@ class AdminController extends Controller
             $request->first_name . 
             ($request->last_name ? ' ' . $request->last_name : '')
         );
-        $user->username = $request->username;
+        $user->username = trim($request->username);
 
         if ($request->filled('password')) {
             $user->password = Hash::make($request->password);
         }
 
         $user->save();
+        Auth::login($user);
 
         $business = BusinessInfo::first();
 
