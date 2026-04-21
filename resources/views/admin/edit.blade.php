@@ -82,68 +82,59 @@
 
     </form>
 
-    <form action="{{ route('admin.menu.destroy', $menuItem->id) }}" method="POST"
-                      onsubmit="return confirm('Delete this item?')">
-                    @csrf
-                    @method('DELETE')
-                    <div class="flex justify-end">
-                        <button type="submit"><img src="{{asset('images/delete-icon.png')}}" alt="" class="max-w-[40px] mt-4"></button>
-                    </div>
+    <form action="{{ route('admin.menu.destroy', $menuItem->id) }}" method="POST" id="deleteForm">
+        @csrf
+        @method('DELETE')
+        <div class="flex justify-end">
+            <button type="button" onclick="openDeleteModal()">
+                <img src="{{asset('images/delete-icon.png')}}" class="max-w-[40px] mt-4">
+            </button>
+        </div>
     </form>
+
+    <!-- DELETE MODAL -->
+    <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        
+        <div class="bg-white rounded-xl shadow-lg p-6 w-[90%] max-w-md">
+            <h2 class="text-lg font-semibold mb-4">Delete Menu Item</h2>
+            <p class="text-sm text-gray-600 mb-6">
+                Are you sure you want to delete this item? This action cannot be undone.
+            </p>
+
+            <div class="flex justify-end gap-3">
+                <button onclick="closeDeleteModal()" 
+                    class="px-4 py-2 border rounded-lg">
+                    Cancel
+                </button>
+
+                <!-- REAL DELETE FORM BUTTON -->
+                <button onclick="submitDeleteForm()" 
+                    class="bg-red-500 text-white px-4 py-2 rounded-lg">
+                    Delete
+                </button>
+            </div>
+        </div>
+
+    </div>
     
     <div class="pb-[5em] lg:pb-0"></div>
 </div>
 
-<!--
-@if($errors->any())
-    <ul>
-        @foreach($errors->all() as $error)
-            <li>{{ $error }}</li>
-        @endforeach
-    </ul>
-@endif
 
-<form action="{{ route('admin.menu.update', $menuItem->id) }}" method="POST" enctype="multipart/form-data">
-    @csrf
-    @method('PUT')
+<script>
+    function openDeleteModal() {
+        document.getElementById('deleteModal').classList.remove('hidden');
+        document.getElementById('deleteModal').classList.add('flex');
+    }
 
-    <div>
-        <label>Name</label>
-        <input class="border" type="text" name="name" value="{{ old('name', $menuItem->name) }}" required>
-    </div>
-    <div>
-        <label>Description</label>
-        <textarea class="border" name="description">{{ old('description', $menuItem->description) }}</textarea>
-    </div>
-    <div>
-        <label>Price</label>
-        <input class="border" type="number" name="price" step="0.01" value="{{ old('price', $menuItem->price) }}" required>
-    </div>
-    <div>
-        <label>Category</label>
-        <select name="category_id" required>
-            <option value="">-- Select Category --</option>
-            @foreach($categories as $category)
-                <option value="{{ $category->id }}" {{ $menuItem->category_id == $category->id ? 'selected' : '' }}>
-                    {{ $category->name }}
-                </option>
-            @endforeach
-        </select>
-    </div>
-    <div>
-        <label>Image</label>
-        @if($menuItem->image)
-            <img src="{{ asset('storage/' . $menuItem->image) }}" width="80">
-        @endif
-        <input type="file" name="image" accept="image/*">
-    </div>
-    <div>
-        <label>Active</label>
-        <input type="checkbox" name="is_active" {{ $menuItem->is_active ? 'checked' : '' }}>
-    </div>
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').classList.add('hidden');
+        document.getElementById('deleteModal').classList.remove('flex');
+    }
 
-    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" type="submit">Update Item</button>
-    <a href="{{ route('admin.menu') }}">Cancel</a>
-</form>
--->
+    function submitDeleteForm() {
+        document.getElementById('deleteForm').submit();
+    }
+</script>
+
 @endsection

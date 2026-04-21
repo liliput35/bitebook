@@ -27,7 +27,9 @@ class AdminController extends Controller
         $recentBookings = Booking::latest()->take(5)->get();
 
         // New Inquiries
-        $newInquiries = Inquiry::where('status', 'new')->count();
+        $newInquiries = Inquiry::whereNull('parent_id')
+            ->where('status', 'new')
+            ->count();
 
         // Upcoming Bookings
         $upcomingBookings = Booking::whereDate('event_date', '>=', Carbon::now())->count();
@@ -59,9 +61,10 @@ class AdminController extends Controller
 
         //RECENT INQUIRIES 
         $recentInquiries = Inquiry::with(['booking', 'sender'])
-        ->latest() // newest first (based on created_at)
-        ->take(5)
-        ->get();
+            ->whereNull('parent_id') // 👈 THIS LINE FIXES IT
+            ->latest()
+            ->take(5)
+            ->get();
 
         return view('admin.dashboard', compact(
             'totalRevenue',
@@ -94,7 +97,7 @@ class AdminController extends Controller
         $totalMenuItems = MenuItem::all()->count() ;
         $menuItems  = MenuItem::with('category')->take(4)->get();
         $categories = Category::all();
-        $bundles  = Bundle::all();
+        $bundles  = Bundle::all()->take(4);
         $totalBundles = Bundle::all()->count() ;
         return view('admin.management', compact('totalMenuItems', 'menuItems', 'categories', 'bundles', 'totalBundles'));
     }
