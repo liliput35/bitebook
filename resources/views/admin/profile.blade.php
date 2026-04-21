@@ -108,7 +108,7 @@
                     
                     <div class="mb-2 lg:w-1/2">
                         <label class="font-medium text-light-gray">Password</label><br>
-                        <input disabled class="input-field border border-light-gray rounded-lg p-2 lg:w-full" type="password" value="******" name="password">
+                        <input disabled class="input-field border border-light-gray rounded-lg p-2 lg:w-full" type="password" placeholder="Leave blank to keep current password" name="password">
                         @error('price') <span>{{ $message }}</span> @enderror
                     </div>          
 
