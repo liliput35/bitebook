@@ -17,12 +17,13 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    //HOME PAGE
     public function home()
     {
         return view('user.home');
     }
     
-    
+    //MENU PAGE
     public function menu()
     {
         $menuItems  = MenuItem::with('category')->get();
@@ -37,11 +38,28 @@ class UserController extends Controller
         return view('user.menu_item', compact('menuItem', 'categories'));
     }
 
+    //CART PAGE
     public function cart()
     {
         $cart = session('cart', []);
+        $bundleData = session('bundle');
 
         $menuItems = MenuItem::whereIn('id', array_keys($cart))->get();
+
+        if ($bundleData) {
+            $bundle = Bundle::findOrFail($bundleData['id']);
+
+            // load selected items safely
+            if (isset($bundleData['selections'])) {
+                $selectedItems = MenuItem::whereIn(
+                    'id',
+                    collect($bundleData['selections'])->flatten()
+                )->get();
+            }
+
+            $bundleQty = $bundleData['quantity'];
+            return view('user.cart', compact('cart', 'menuItems', 'bundle', 'bundleQty'));
+        }
 
         return view('user.cart', compact('cart', 'menuItems'));
     }
@@ -102,7 +120,7 @@ class UserController extends Controller
         return back()->with('success', 'Item removed');
     }
     
-
+    //BUNDLES PAGE
     public function bundles()
     {
         $bundles  = Bundle::all();
@@ -116,6 +134,7 @@ class UserController extends Controller
         return view('user.bundle_info', compact('bundle'));
     }
 
+    //ADD BUNDLE
     public function selectBundle(Request $request, $id)
     {
         $request->validate([
@@ -127,8 +146,8 @@ class UserController extends Controller
             return back()->with('error', 'You already selected menu items. Clear cart first.');
         }
 
-        // Store bundle WITH quantity
-        session()->put('bundle', [
+        // Store bundle as pending bundle w quantity
+        session()->put('pending_bundle', [
             'id' => $id,
             'quantity' => $request->quantity
         ]);
@@ -159,6 +178,49 @@ class UserController extends Controller
         return back()->with('success', 'Bundle removed');
     }
 
+    public function customizeBundle()
+    {
+        $bundleData = session('pending_bundle');
+
+        if (!$bundleData) {
+            return redirect()->route('user.bundles')->with('error', 'Select a bundle first.');
+        }
+
+        $bundle = Bundle::with('requirements.category.menuItems')
+            ->findOrFail($bundleData['id']);
+
+        return view('user.bundle_customize', compact('bundle', 'bundleData'));
+    }
+
+    public function saveBundleSelection(Request $request)
+    {
+        $pendingBundle = session('pending_bundle');
+
+        if (!$pendingBundle) {
+            return redirect()->route('user.bundles')->with('error', 'No bundle pending.');
+        }
+
+        $bundle = Bundle::with('requirements.category')
+            ->findOrFail($pendingBundle['id']);
+
+        foreach ($bundle->requirements as $req) {
+            $selected = $request->selections[$req->category_id] ?? [];
+
+            if (count($selected) != $req->required_quantity) {
+                return back()->with('error',
+                    "Select exactly {$req->required_quantity} items for {$req->category->name}");
+            }
+        }
+
+        // SAVE selections
+        $pendingBundle['selections'] = $request->selections;
+        session()->put('bundle', $pendingBundle);
+        session()->forget('pending_bundle');
+
+        return redirect()->route('user.cart')->with('success', 'Bundle customized!');
+    }
+
+    //BOOKINGS
     public function book()
     {
         $cart = session('cart', []);
@@ -350,7 +412,7 @@ class UserController extends Controller
         ));
     }
 
-        //PROFILE
+    //PROFILE
     public function profile()
     {
         $bookings = Booking::where('user_id', auth()->id())
@@ -391,41 +453,6 @@ class UserController extends Controller
 
 
 
-    public function customizeBundle()
-    {
-        $bundleData = session('bundle');
-
-        if (!$bundleData) {
-            return redirect()->route('user.bundles')->with('error', 'Select a bundle first.');
-        }
-
-        $bundle = Bundle::with('requirements.category.menuItems')
-            ->findOrFail($bundleData['id']);
-
-        return view('user.bundle_customize', compact('bundle', 'bundleData'));
-    }
-
-    public function saveBundleSelection(Request $request)
-    {
-        $bundleData = session('bundle');
-
-        $bundle = Bundle::with('requirements.category')
-            ->findOrFail($bundleData['id']);
-
-        foreach ($bundle->requirements as $req) {
-            $selected = $request->selections[$req->category_id] ?? [];
-
-            if (count($selected) != $req->required_quantity) {
-                return back()->with('error',
-                    "Select exactly {$req->required_quantity} items for {$req->category->name}");
-            }
-        }
-
-        // SAVE selections
-        $bundleData['selections'] = $request->selections;
-        session()->put('bundle', $bundleData);
-
-        return redirect()->route('user.book')->with('success', 'Bundle customized!');
-    }
+    
 
 }

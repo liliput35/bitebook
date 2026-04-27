@@ -24,7 +24,11 @@
 
         <div class="mb-4">
             <label>Guest Count</label>
-            <input type="number" name="guest_count" min="1" class="border p-2 w-full" required>
+            @if($bundle)
+                <input type="number" name="guest_count" min="1" class="border p-2 w-full" value="{{ $bundleData['quantity'] }}" readonly>
+            @else
+                <input type="number" name="guest_count" min="1" class="border p-2 w-full" required>
+            @endif
         </div>
 
         <div class="mb-4">
