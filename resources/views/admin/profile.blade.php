@@ -4,7 +4,7 @@
 
 @section('admin_pages')
 
-    <div class="w-[90%] mx-auto lg:min-h-[70vh]">
+    <div class="w-[90%] mx-auto lg:min-h-[80vh]">
         
         <div class="lg:flex lg:justify-between lg:items-center">
             <div class="">
@@ -16,7 +16,7 @@
 
         </div>
 
-        <form method="POST" action="{{ route('admin.profile.update') }}">
+        <form method="POST" action="{{ route('admin.profile.update') }}" class="mb-6">
             @csrf
             @method('PUT')
 
@@ -116,6 +116,8 @@
 
             </div>
         </form>
+
+        <a href="{{route('logout')}}" class="py-2 px-6 bg-light-green text-background rounded-lg">Logout</a>
 
         <div class="pb-[5em] lg:pb-0"></div>
     </div>
