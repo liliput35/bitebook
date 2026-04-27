@@ -4,7 +4,7 @@
 
 @section('user_pages')
 
-<div class="w-[90%] mx-auto lg:min-h-[100vh]">
+<div class="w-[90%] mx-auto lg:min-h-[100vh] pt-8">
 
     
     <div class="border-b border-dark-gray pb-2 mb-6">

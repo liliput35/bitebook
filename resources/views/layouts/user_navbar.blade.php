@@ -1,4 +1,4 @@
-<div class="desktop-navbar bg-white hidden lg:block shadow-lg py-5 mb-6">
+<div class="desktop-navbar bg-white hidden lg:block shadow-lg py-5">
     <div class="lg:flex justify-between items-center  w-[90%] mx-auto">
     
     <a href="{{ route('user.home') }}"><img src="{{asset('images/logo-green.png')}}" alt="" class="max-w-[100px]"></a>

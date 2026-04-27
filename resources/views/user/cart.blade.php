@@ -4,7 +4,7 @@
 
 @section('user_pages')
 
-<div class="w-[90%] mx-auto pt-6 lg:w-1/2 min-h-[70vh]">
+<div class="w-[90%] mx-auto pt-8 lg:w-1/2 min-h-[70vh]">
 
     <h1 class="text-2xl font-bold mb-4">Your Selection</h1>
 

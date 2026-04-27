@@ -4,7 +4,7 @@
 
 @section('user_pages')
 
-<div class="lg:min-h-[100vh] ">
+<div class="lg:min-h-[100vh]">
     <div class="ml-3 mb-6 lg:hidden">
             <h1 class="text-[2em] font-bold mt-6 lg:text-[2.5em]">Inquiries</h1>
             <p class="text-dark-gray text-lg leading-none lg:text-[1.5em]">Manage your potential bookings.</p>

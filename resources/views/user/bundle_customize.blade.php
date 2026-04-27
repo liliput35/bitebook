@@ -4,7 +4,7 @@
 
 @section('user_pages')
 
-<div class="w-[90%] mx-auto pt-6 lg:w-1/2">
+<div class="w-[90%] mx-auto pt-8 lg:w-1/2">
 
     <h1 class="text-2xl font-bold mb-4">
         Customize {{ $bundle->name }}
