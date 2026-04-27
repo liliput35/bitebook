@@ -63,7 +63,10 @@
                 </p>
             </div>
 
-            <div class="mt-6">
+            <div class="mt-3">
+                @if($booking->bundle)
+                    <p class="text-[1.25em] font-medium text-dark-green mb-2">{{ $booking->bundle->name }}</p>
+                @endif
                 @php
                     $subtotal = 0;
                 @endphp
@@ -79,7 +82,9 @@
 
                     <div class="flex justify-between text-[1.1em] mb-4 lg:mb-2">
                         <p>{{ $item->menuItem->name ?? 'Item' }}</p>
-                        <p class="text-gray-500">₱{{ number_format($lineTotal, 2) }}</p>
+                        @if(!$booking->bundle)
+                            <p class="text-gray-500">₱{{ number_format($lineTotal, 2) }}</p>
+                        @endif
                     </div>
                 @endforeach
 
@@ -88,17 +93,15 @@
 
                 <!-- SUBTOTAL -->
                 <div class="flex text-light-gray justify-between text-[1.1em] mb-2">
+                    @php
+                        if($booking->bundle){
+                            $subtotal = $booking->bundle->price_per_head * $booking->guest_count ;
+                        }
+                    @endphp
+
                     <p>Subtotal</p>
                     <p>₱{{ number_format($subtotal, 2) }}</p>
                 </div>
-
-                <!-- IF BUNDLE -->
-                @if($booking->bundle)
-                    <div class="flex {{ $discColor === 'green' ? 'text-green-500' : 'text-red-500' }} justify-between text-[1.1em] mb-2">
-                        <p>Bundle: {{$booking->bundle->name}}</p>
-                        <p>₱{{ number_format($discount, 2) }}</p>
-                    </div>
-                @endif
 
                 <!-- DELIVERY -->
                 @php $delivery = 500; @endphp
