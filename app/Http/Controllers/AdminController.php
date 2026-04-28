@@ -139,7 +139,12 @@ class AdminController extends Controller
 
     public function showBooking(Booking $booking)
     {
-        $booking->load(['user', 'bundle', 'items']); // load relationships
+        $booking->load([
+            'user', 
+            'bundle', 
+            'items.menuItem'=> function ($query) {
+                $query->withTrashed();}
+        ]); // load relationships
 
        $subtotal = 0;
 

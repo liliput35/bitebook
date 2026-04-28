@@ -114,13 +114,7 @@ class BundleController extends Controller
     // DELETE BUNDLE
     public function destroy(Bundle $bundle)
     {
-        if ($bundle->image && Storage::disk('public')->exists($bundle->image)) {
-            Storage::disk('public')->delete($bundle->image);
-        }
-
-        $bundle->requirements()->delete(); // delete child records
         $bundle->delete();
-
-        return redirect()->route('admin.bundles')->with('success', 'Bundle deleted');
+        return redirect()->route('admin.bundles')->with('success', 'Bundle archived');
     }
 }

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->decimal('price_per_head', 10, 2);
             $table->string('image')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

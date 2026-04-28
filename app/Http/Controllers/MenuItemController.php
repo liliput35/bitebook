@@ -45,12 +45,11 @@ class MenuItemController extends Controller
 
     public function destroy(MenuItem $menuItem)
     {
-        if ($menuItem->image && Storage::disk('public')->exists($menuItem->image)) {
-            Storage::disk('public')->delete($menuItem->image);
-        }
-        
-        $menuItem->delete();
-        return redirect()->route('admin.menu')->with('success', 'Menu item deleted.');
+        // ❌ DO NOT delete image here anymore
+
+        $menuItem->delete(); // soft delete
+
+        return redirect()->route('admin.menu')->with('success', 'Menu item archived.');
     }
     public function edit(MenuItem $menuItem)
     {
