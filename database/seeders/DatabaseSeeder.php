@@ -198,15 +198,26 @@ class DatabaseSeeder extends Seeder
         foreach ($users as $user) {
 
             // BUNDLE BOOKING
+            $guestCount = rand(20, 100);
+            $bundleTotal = $bundleObjects['Classic Wedding Reception']->price_per_head * $guestCount;
+
+            if ($guestCount <= 50) {
+                $delivSetup = 500;
+            } elseif ($guestCount <= 100) {
+                $delivSetup = 800;
+            } else {
+                $delivSetup = 1200;
+            }
+
             $bundleBooking = Booking::create([
                 'user_id' => $user->id,
                 'event_type' => 'Wedding Reception',
                 'event_date' => Carbon::now()->addDays(rand(1, 20)),
                 'venue' => 'Hall A',
-                'guest_count' => rand(20, 100),
+                'guest_count' => $guestCount,
                 'status' => 'pending',
                 'bundle_id' => $bundleObjects['Classic Wedding Reception']->id,
-                'total_price' => 0, // optional
+                'total_price' => $bundleTotal + $delivSetup,
             ]);
 
             // attach random items (simulate bundle selections)
@@ -221,6 +232,26 @@ class DatabaseSeeder extends Seeder
             }
 
             // CUSTOM BOOKING (NO BUNDLE)
+            $customItems = $menuItems->random(3);
+            $customSubtotal = 0;
+            $totalQty = 0;
+            $itemsToInsert = [];
+
+            foreach ($customItems as $item) {
+                $qty = rand(1, 3);
+                $customSubtotal += $item->price * $qty;
+                $totalQty += $qty;
+                $itemsToInsert[] = ['item' => $item, 'qty' => $qty];
+            }
+
+            if ($totalQty <= 20) {
+                $delivSetup = 200;
+            } elseif ($totalQty <= 50) {
+                $delivSetup = 350;
+            } else {
+                $delivSetup = 500;
+            }
+
             $customBooking = Booking::create([
                 'user_id' => $user->id,
                 'event_type' => 'Birthday Party',
@@ -229,16 +260,15 @@ class DatabaseSeeder extends Seeder
                 'guest_count' => rand(10, 50),
                 'status' => 'confirmed',
                 'bundle_id' => null,
-                'total_price' => 0,
+                'total_price' => $customSubtotal + $delivSetup,
             ]);
 
-            $items = $menuItems->random(3);
-            foreach ($items as $item) {
+            foreach ($itemsToInsert as $entry) {
                 BookingItem::create([
                     'booking_id' => $customBooking->id,
-                    'menu_item_id' => $item->id,
-                    'quantity' => rand(1, 3),
-                    'price' => $item->price,
+                    'menu_item_id' => $entry['item']->id,
+                    'quantity' => $entry['qty'],
+                    'price' => $entry['item']->price,
                 ]);
             }
 
@@ -249,7 +279,6 @@ class DatabaseSeeder extends Seeder
                 'message' => 'Can we change one dish?',
                 'status' => 'new',
             ]);
-
         }
 
         //BUSINESS INFO
