@@ -67,9 +67,6 @@
                 @if($booking->bundle)
                     <p class="text-[1.25em] font-medium text-dark-green mb-2">{{ $booking->bundle->name }}</p>
                 @endif
-                @php
-                    $subtotal = 0;
-                @endphp
 
                 @if($booking->items->count() > 0)
 
@@ -77,7 +74,6 @@
                 @foreach($booking->items as $item)
                     @php
                         $lineTotal = $item->price * $item->quantity;
-                        $subtotal += $lineTotal;
                     @endphp
 
                     <div class="flex justify-between text-[1.1em] mb-4 lg:mb-2">
@@ -93,32 +89,24 @@
 
                 <!-- SUBTOTAL -->
                 <div class="flex text-light-gray justify-between text-[1.1em] mb-2">
-                    @php
-                        if($booking->bundle){
-                            $subtotal = $booking->bundle->price_per_head * $booking->guest_count ;
-                        }
-                    @endphp
-
                     <p>Subtotal</p>
-                    <p>₱{{ number_format($subtotal, 2) }}</p>
+                    @if($booking->bundle)
+                        <p>₱{{ number_format($bundleTotal, 2) }}</p>
+                    @else
+                        <p>₱{{ number_format($subtotal, 2) }}</p>
+                    @endif
                 </div>
 
                 <!-- DELIVERY -->
-                @php $delivery = 500; @endphp
                 <div class="flex text-light-gray justify-between text-[1.1em] mb-2">
                     <p>Delivery & Setup</p>
-                    <p>₱{{ number_format($delivery, 2) }}</p>
+                    <p>₱{{ number_format($delivSetup, 2) }}</p>
                 </div>
 
                 <!-- TOTAL -->
                 <div class="flex justify-between text-[1.3em] font-bold mt-3">
                     <p>Estimated Total</p>
-
-                    @if($booking->bundle)
-                        <p>₱{{ number_format($bundleTotal + $delivery, 2) }}</p>
-                    @else
-                        <p>₱{{ number_format($subtotal + $delivery, 2) }}</p>
-                    @endif
+                    <p>₱{{ number_format($booking->total_price, 2) }}</p>
                 </div>
 
             @else

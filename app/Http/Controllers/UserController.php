@@ -230,6 +230,7 @@ class UserController extends Controller
         $selectedItems = collect();
         $total = 0;
         $bundle = null;
+        $delivSetup = 0;
 
         if ($cart) {
             $menuItems = MenuItem::whereIn('id', array_keys($cart))->get();
@@ -254,7 +255,37 @@ class UserController extends Controller
             $total = $bundle->price_per_head * $bundleData['quantity'];
         }
 
-        return view('user.book', compact('menuItems', 'cart', 'total', 'bundle', 'bundleData', 'selectedItems'));
+        if ($cart && !$bundleData) {
+            $totalQty = 0;
+
+            foreach ($cart as $item) {
+                $totalQty += $item['quantity'];
+            }
+
+            if ($totalQty <= 20) {
+                $delivSetup = 200;
+            } elseif ($totalQty <= 50) {
+                $delivSetup = 350;
+            } else {
+                $delivSetup = 500;
+            }
+        }
+
+        if ($bundleData) {
+            $guestCount = $bundleData['quantity'];
+
+            if ($guestCount <= 50) {
+                $delivSetup = 500;
+            } elseif ($guestCount <= 100) {
+                $delivSetup = 800;
+            } else {
+                $delivSetup = 1200;
+            }
+        }
+
+        session(['delivSetup' => $delivSetup]);
+
+        return view('user.book', compact('menuItems', 'cart', 'total', 'bundle', 'bundleData', 'selectedItems', 'delivSetup'));
     }
 
     public function storeBooking(Request $request)
@@ -269,6 +300,7 @@ class UserController extends Controller
         $cart = session('cart', []);
 
         $total = 0;
+        $delivSetup = session('delivSetup', 0);
 
 
         // CASE 1: BUNDLE
@@ -298,7 +330,7 @@ class UserController extends Controller
             'event_date' => $request->event_date,
             'guest_count' => $request->guest_count,
             'status' => 'pending',
-            'total_price' => $total,
+            'total_price' => $total + $delivSetup,
         ]);
 
         // SAVE ITEMS IF CUSTOM
@@ -335,6 +367,7 @@ class UserController extends Controller
         // CLEAR SESSION
         session()->forget('cart');
         session()->forget('bundle');
+        session()->forget('delivSetup');
 
         return redirect()->route('user.home')->with('success', 'Booking created!');
     }
@@ -382,33 +415,29 @@ class UserController extends Controller
         $booking->load(['user', 'bundle', 'items']); // load relationships
 
        $subtotal = 0;
-       $discColor = "red" ; 
 
         foreach ($booking->items as $item) {
             $subtotal += $item->price * $item->quantity;
         }
 
         $bundleTotal = null;
-        $discount = 0;
 
         if ($booking->bundle) {
             $bundleTotal = $booking->bundle->price_per_head * $booking->guest_count;
-            $discount = $subtotal - $bundleTotal;
+        }
 
-            if($discount < 0){ 
-                $discount *= -1 ;
-                $discColor = "green" ;
-            } else { 
-                $discColor = "red" ;
-            }
+        $delivSetup = 0 ;
+        if($booking->total_price > 0 && $booking->bundle){
+            $delivSetup = $booking->total_price - $bundleTotal ;
+        } else if($booking->total_price > 0 && !$booking->bundle){ 
+            $delivSetup = $booking->total_price - $subtotal ;
         }
 
         return view('user.booking_show', compact(
             'booking',
             'subtotal',
             'bundleTotal',
-            'discount', 
-            'discColor'
+            'delivSetup'
         ));
     }
 

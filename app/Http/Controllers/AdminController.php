@@ -141,33 +141,29 @@ class AdminController extends Controller
         $booking->load(['user', 'bundle', 'items']); // load relationships
 
        $subtotal = 0;
-       $discColor = "red" ; 
 
         foreach ($booking->items as $item) {
             $subtotal += $item->price * $item->quantity;
         }
 
         $bundleTotal = null;
-        $discount = 0;
 
         if ($booking->bundle) {
             $bundleTotal = $booking->bundle->price_per_head * $booking->guest_count;
-            $discount = $subtotal - $bundleTotal;
+        }
 
-            if($discount < 0){ 
-                $discount *= -1 ;
-                $discColor = "green" ;
-            } else { 
-                $discColor = "red" ;
-            }
+        $delivSetup = 0 ;
+        if($booking->total_price > 0 && $booking->bundle){
+            $delivSetup = $booking->total_price - $bundleTotal ;
+        } else if($booking->total_price > 0 && !$booking->bundle){ 
+            $delivSetup = $booking->total_price - $subtotal ;
         }
 
         return view('admin.booking_show', compact(
             'booking',
             'subtotal',
             'bundleTotal',
-            'discount', 
-            'discColor'
+            'delivSetup'
         ));
     }
 
@@ -315,6 +311,22 @@ class AdminController extends Controller
                 }
             }
 
+            // RECALC using updated guest_count
+            $guestCount = $request->guest_count;
+            $bundleTotal = $bundle->price_per_head * $guestCount;
+
+            if ($guestCount <= 50) {
+                $delivSetup = 500;
+            } elseif ($guestCount <= 100) {
+                $delivSetup = 800;
+            } else {
+                $delivSetup = 1200;
+            }
+
+            $booking->update([
+                'total_price' => $bundleTotal + $delivSetup,
+            ]);
+
             return redirect()->route('admin.bookings.show', $booking->id)
                 ->with('success', 'Bundle updated successfully');
         }
@@ -362,6 +374,29 @@ class AdminController extends Controller
             }
         }
 
+        // RECALC subtotal and totalQty fresh from DB after all edits
+        $booking->load('items');
+
+        $subtotal = 0;
+        $totalQty = 0;
+
+        foreach ($booking->items as $item) {
+            $subtotal += $item->price * $item->quantity;
+            $totalQty += $item->quantity;
+        }
+
+        if ($totalQty <= 20) {
+            $delivSetup = 200;
+        } elseif ($totalQty <= 50) {
+            $delivSetup = 350;
+        } else {
+            $delivSetup = 500;
+        }
+
+        $booking->update([
+            'total_price' => $subtotal + $delivSetup,
+        ]);
+
         return redirect()->route('admin.bookings.show', $booking->id)
             ->with('success', 'Booking updated successfully');
     } 
@@ -384,6 +419,8 @@ class AdminController extends Controller
         ]);
 
         $total = 0;
+        $delivSetup = 0;
+
 
         // =========================
         // CASE 1: BUNDLE
@@ -404,6 +441,17 @@ class AdminController extends Controller
             }
 
             $total = $bundle->price_per_head * $request->guest_count;
+            if ($bundle) {
+                $guestCount = $request->guest_count;
+
+                if ($guestCount <= 50) {
+                    $delivSetup = 500;
+                } elseif ($guestCount <= 100) {
+                    $delivSetup = 800;
+                } else {
+                    $delivSetup = 1200;
+                }
+            } 
 
             $booking = Booking::create([
                 'user_id' => null, // or assign later
@@ -413,7 +461,7 @@ class AdminController extends Controller
                 'event_date' => $request->event_date,
                 'guest_count' => $request->guest_count,
                 'status' => 'pending',
-                'total_price' => $total,
+                'total_price' => $total + $delivSetup,
             ]);
 
             foreach ($request->selections as $items) {
@@ -435,12 +483,21 @@ class AdminController extends Controller
         // CASE 2: CUSTOM MENU
         // =========================
         else {
-
+            $totalQty = 0 ;
             foreach ($request->new_items as $item) {
                 if (!empty($item['menu_item_id']) && !empty($item['quantity'])) {
                     $menuItem = MenuItem::find($item['menu_item_id']);
                     $total += $menuItem->price * $item['quantity'];
+                    $totalQty += $item['quantity'] ;
                 }
+            }
+
+            if ($totalQty <= 20) {
+                $delivSetup = 200;
+            } elseif ($totalQty <= 50) {
+                $delivSetup = 350;
+            } else {
+                $delivSetup = 500;
             }
 
             $booking = Booking::create([
@@ -451,7 +508,7 @@ class AdminController extends Controller
                 'event_date' => $request->event_date,
                 'guest_count' => $request->guest_count,
                 'status' => 'pending',
-                'total_price' => $total,
+                'total_price' => $total + $delivSetup,
             ]);
 
             foreach ($request->new_items as $item) {

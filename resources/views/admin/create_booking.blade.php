@@ -29,8 +29,8 @@
         <!-- BOOKING DETAILS -->
         <div class="bg-white shadow p-4 rounded mt-4">
             <input type="text" name="event_type" placeholder="Event Type" class="border p-2 w-full mb-2">
-            <input type="date" name="event_date" class="border p-2 w-full mb-2">
-            <input type="number" name="guest_count" id="guest_count" placeholder="Guest Count" class="border p-2 w-full mb-2">
+            <input type="date" name="event_date" class="border p-2 w-full mb-2" min="{{ date('Y-m-d') }}" value="{{ date('Y-m-d') }}">
+            <input type="number" name="guest_count" id="guest_count" placeholder="Guest Count" class="border p-2 w-full mb-2" min="1">
             <input type="text" name="venue" placeholder="Venue" class="border p-2 w-full">
         </div>
 
@@ -47,7 +47,7 @@
                         @endforeach
                     </select>
 
-                    <input type="number" name="new_items[0][quantity]" class="border p-2 w-1/4" placeholder="Qty">
+                    <input type="number" name="new_items[0][quantity]" class="border p-2 w-1/4" placeholder="Qty" min="1">
 
                     <button type="button" class="booking-remove-row bg-red-500 text-white px-3 rounded">X</button>
                 </div>
