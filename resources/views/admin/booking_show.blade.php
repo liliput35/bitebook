@@ -66,64 +66,55 @@
                 </p>
             </div>
 
-            <div class="mt-6">
-                @php
-                    $subtotal = 0;
-                @endphp
+           <div class="mt-3">
+                @if($booking->bundle)
+                    <p class="text-[1.25em] font-medium text-dark-green mb-2">{{ $booking->bundle->name }}</p>
+                @endif
 
                 @if($booking->items->count() > 0)
 
-                <!-- ITEMS -->
-                @foreach($booking->items as $item)
-                    @php
-                        $lineTotal = $item->price * $item->quantity;
-                        $subtotal += $lineTotal;
-                    @endphp
+                    <!-- ITEMS -->
+                    @foreach($booking->items as $item)
+                        @php
+                            $lineTotal = $item->price * $item->quantity;
+                        @endphp
 
-                    <div class="flex justify-between text-[1.1em] mb-4 lg:mb-2">
-                        <p>{{ $item->menuItem->name ?? 'Item' }}</p>
-                        <p class="text-gray-500">₱{{ number_format($lineTotal, 2) }}</p>
+                        <div class="flex justify-between text-[1.1em] mb-4 lg:mb-2">
+                            <p>{{ $item->menuItem->name ?? 'Item' }}</p>
+                            @if(!$booking->bundle)
+                                <p class="text-gray-500">₱{{ number_format($lineTotal, 2) }}</p>
+                            @endif
+                        </div>
+                    @endforeach
+
+                    <!-- DIVIDER -->
+                    <div class="border-t my-3"></div>
+
+                    <!-- SUBTOTAL -->
+                    <div class="flex text-light-gray justify-between text-[1.1em] mb-2">
+                        <p>Subtotal</p>
+                        @if($booking->bundle)
+                            <p>₱{{ number_format($bundleTotal, 2) }}</p>
+                        @else
+                            <p>₱{{ number_format($subtotal, 2) }}</p>
+                        @endif
                     </div>
-                @endforeach
 
-                <!-- DIVIDER -->
-                <div class="border-t my-3"></div>
-
-                <!-- SUBTOTAL -->
-                <div class="flex text-light-gray justify-between text-[1.1em] mb-2">
-                    <p>Subtotal</p>
-                    <p>₱{{ number_format($subtotal, 2) }}</p>
-                </div>
-
-                <!-- IF BUNDLE -->
-                @if($booking->bundle)
-                    <div class="flex {{ $discColor === 'green' ? 'text-green-500' : 'text-red-500' }} justify-between text-[1.1em] mb-2">
-                        <p>Bundle: {{$booking->bundle->name}}</p>
-                        <p>₱{{ number_format($discount, 2) }}</p>
+                    <!-- DELIVERY -->
+                    <div class="flex text-light-gray justify-between text-[1.1em] mb-2">
+                        <p>Delivery & Setup</p>
+                        <p>₱{{ number_format($delivSetup, 2) }}</p>
                     </div>
+
+                    <!-- TOTAL -->
+                    <div class="flex justify-between text-[1.3em] font-bold mt-3">
+                        <p>Estimated Total</p>
+                        <p>₱{{ number_format($booking->total_price, 2) }}</p>
+                    </div>
+
+                @else
+                    <p class="text-gray-500">No menu items selected.</p>
                 @endif
-
-                <!-- DELIVERY -->
-                @php $delivery = 500; @endphp
-                <div class="flex text-light-gray justify-between text-[1.1em] mb-2">
-                    <p>Delivery & Setup</p>
-                    <p>₱{{ number_format($delivery, 2) }}</p>
-                </div>
-
-                <!-- TOTAL -->
-                <div class="flex justify-between text-[1.3em] font-bold mt-3">
-                    <p>Estimated Total</p>
-
-                    @if($booking->bundle)
-                        <p>₱{{ number_format($bundleTotal + $delivery, 2) }}</p>
-                    @else
-                        <p>₱{{ number_format($subtotal + $delivery, 2) }}</p>
-                    @endif
-                </div>
-
-            @else
-                <p class="text-gray-500">No menu items selected.</p>
-            @endif
 
             </div>
 

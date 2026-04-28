@@ -1,8 +1,18 @@
 @include('layouts.header')
 
 <main>
-    <div class="bg-dark-green py-4 flex justify-center lg:hidden">
-        <img src="{{asset('images/logo.png')}}" alt="" class="max-w-[85px]">
+    <div class="bg-dark-green py-4 lg:hidden">
+        <div class="flex justify-between items-center w-[90%] mx-auto">
+            <a href="{{ url()->previous() }}" class="underline text-lg text-white">< Back</a>
+
+            <img src="{{asset('images/logo.png')}}" alt="" class="max-w-[85px]">
+
+            <div class="flex items-center gap-3">
+                <a href="{{ route('user.cart') }}"><img src="{{asset('images/shopping-cart-white.png')}}" alt="" class="w-[35px]"></a>
+                <a href="{{ route('user.profile') }}"><img src="{{asset('images/profile-icon-white.png')}}" alt="" class="w-[35px]"></a>
+            </div>
+        </div>
+        
     </div>
     @include('layouts.user_navbar')
     @yield('user_pages')

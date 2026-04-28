@@ -19,12 +19,16 @@
 
         <div class="mb-4">
             <label>Event Date</label>
-            <input type="date" name="event_date" class="border p-2 w-full" required>
+            <input type="date" name="event_date" class="border p-2 w-full" min="{{ date('Y-m-d') }}" value="{{ date('Y-m-d') }}"required>
         </div>
 
         <div class="mb-4">
             <label>Guest Count</label>
-            <input type="number" name="guest_count" min="1" class="border p-2 w-full" required>
+            @if($bundle)
+                <input type="number" name="guest_count" min="1" class="border p-2 w-full" value="{{ $bundleData['quantity'] }}" readonly>
+            @else
+                <input type="number" name="guest_count" min="1" class="border p-2 w-full" required>
+            @endif
         </div>
 
         <div class="mb-4">
@@ -58,7 +62,9 @@
                     </p>
                 @endforeach
 
-                <p class="mt-2 font-semibold">Total: ₱{{ $total }}</p>
+                <p class="mt-2 text-dark-gray">Subtotal: ₱{{ $total }}</p>
+                <p class=" text-dark-gray">Delivery and Setup: ₱{{ $delivSetup }}</p>
+                <p class="mt-2 font-semibold">Total: ₱{{ $total + $delivSetup }}</p>
             @endif
         </div>
 

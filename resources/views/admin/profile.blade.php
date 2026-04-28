@@ -36,13 +36,11 @@
                         <div class="mb-2 lg:w-1/2">
                             <label class="font-medium text-light-gray">Company Name</label><br>
                             <input disabled class="input-field border border-light-gray rounded-lg w-full p-2" type="text" name="company_name" value="{{ $business->company_name ?? '' }}">
-                            @error('name') <span>{{ $message }}</span> @enderror
                         </div>
                         
                         <div class="mb-2 lg:w-1/2">
                             <label class="font-medium text-light-gray">Contact Person</label><br>
                             <input disabled class="input-field border border-light-gray rounded-lg p-2 lg:w-full" type="text" name="contact_person" value="{{ $business->contact_person  ?? ''}}">
-                            @error('price') <span>{{ $message }}</span> @enderror
                         </div> 
                     </div>
 
@@ -51,20 +49,17 @@
                         <div class="mb-2 lg:w-1/2">
                             <label class="font-medium text-light-gray">Company Email</label><br>
                             <input disabled class="input-field border border-light-gray rounded-lg p-2 lg:w-full" type="text" name="company_email" value="{{ $business->company_email ?? '' }}">
-                            @error('price') <span>{{ $message }}</span> @enderror
                         </div> 
                         
                         <div class="mb-2 lg:w-1/2">
                             <label class="font-medium text-light-gray">Company Contact Number</label><br>
                             <input disabled class="input-field border border-light-gray rounded-lg p-2 lg:w-full" type="text" name="company_contact_number" value="{{ $business->company_contact_number  ?? ''}}">
-                            @error('price') <span>{{ $message }}</span> @enderror
                         </div> 
                     </div>  
 
                     <div class="mb-2 lg:w-1/2">
                         <label class="font-medium text-light-gray">Location</label><br>
                         <input disabled class="input-field border border-light-gray rounded-lg p-2 lg:w-full" type="text" name="location" value="{{ $business->location ?? ''}}" >
-                        @error('price') <span>{{ $message }}</span> @enderror
                     </div>                     
 
                 
@@ -89,13 +84,11 @@
                         <div class="mb-2 lg:w-1/2">
                             <label class="font-medium text-light-gray">First Name</label><br>
                             <input disabled class="input-field border border-light-gray rounded-lg w-full p-2" type="text" name="first_name" value="{{ $parts[0] ?? '' }}">
-                            @error('name') <span>{{ $message }}</span> @enderror
                         </div>
                         
                         <div class="mb-2 lg:w-1/2">
                             <label class="font-medium text-light-gray">Last Name</label><br>
                             <input disabled class="input-field border border-light-gray rounded-lg p-2 lg:w-full" type="text" name="last_name" value="{{ $parts[1] ?? '' }}">
-                            @error('price') <span>{{ $message }}</span> @enderror
                         </div> 
                     
                     </div>
@@ -103,13 +96,17 @@
                     <div class="mb-2 lg:w-1/2">
                         <label class="font-medium text-light-gray">Username</label><br>
                         <input disabled class="input-field border border-light-gray rounded-lg p-2 lg:w-full" type="text" name="username" value="{{ auth()->user()->username}}">
-                        @error('price') <span>{{ $message }}</span> @enderror
+                        @error('username')
+                            <span class="text-red-600 text-sm">{{ $message }}</span>
+                        @enderror
                     </div> 
                     
                     <div class="mb-2 lg:w-1/2">
                         <label class="font-medium text-light-gray">Password</label><br>
                         <input disabled class="input-field border border-light-gray rounded-lg p-2 lg:w-full" type="password" placeholder="Leave blank to keep current password" name="password">
-                        @error('price') <span>{{ $message }}</span> @enderror
+                        @error('password')
+                            <span class="text-red-600 text-sm">{{ $message }}</span>
+                        @enderror
                     </div>          
 
                 </div>

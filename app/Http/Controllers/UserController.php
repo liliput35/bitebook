@@ -17,12 +17,13 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    //HOME PAGE
     public function home()
     {
         return view('user.home');
     }
     
-    
+    //MENU PAGE
     public function menu()
     {
         $menuItems  = MenuItem::with('category')->get();
@@ -37,11 +38,28 @@ class UserController extends Controller
         return view('user.menu_item', compact('menuItem', 'categories'));
     }
 
+    //CART PAGE
     public function cart()
     {
         $cart = session('cart', []);
+        $bundleData = session('bundle');
 
         $menuItems = MenuItem::whereIn('id', array_keys($cart))->get();
+
+        if ($bundleData) {
+            $bundle = Bundle::findOrFail($bundleData['id']);
+
+            // load selected items safely
+            if (isset($bundleData['selections'])) {
+                $selectedItems = MenuItem::whereIn(
+                    'id',
+                    collect($bundleData['selections'])->flatten()
+                )->get();
+            }
+
+            $bundleQty = $bundleData['quantity'];
+            return view('user.cart', compact('cart', 'menuItems', 'bundle', 'bundleQty'));
+        }
 
         return view('user.cart', compact('cart', 'menuItems'));
     }
@@ -102,7 +120,7 @@ class UserController extends Controller
         return back()->with('success', 'Item removed');
     }
     
-
+    //BUNDLES PAGE
     public function bundles()
     {
         $bundles  = Bundle::all();
@@ -116,6 +134,7 @@ class UserController extends Controller
         return view('user.bundle_info', compact('bundle'));
     }
 
+    //ADD BUNDLE
     public function selectBundle(Request $request, $id)
     {
         $request->validate([
@@ -127,8 +146,8 @@ class UserController extends Controller
             return back()->with('error', 'You already selected menu items. Clear cart first.');
         }
 
-        // Store bundle WITH quantity
-        session()->put('bundle', [
+        // Store bundle as pending bundle w quantity
+        session()->put('pending_bundle', [
             'id' => $id,
             'quantity' => $request->quantity
         ]);
@@ -159,6 +178,49 @@ class UserController extends Controller
         return back()->with('success', 'Bundle removed');
     }
 
+    public function customizeBundle()
+    {
+        $bundleData = session('pending_bundle');
+
+        if (!$bundleData) {
+            return redirect()->route('user.bundles')->with('error', 'Select a bundle first.');
+        }
+
+        $bundle = Bundle::with('requirements.category.menuItems')
+            ->findOrFail($bundleData['id']);
+
+        return view('user.bundle_customize', compact('bundle', 'bundleData'));
+    }
+
+    public function saveBundleSelection(Request $request)
+    {
+        $pendingBundle = session('pending_bundle');
+
+        if (!$pendingBundle) {
+            return redirect()->route('user.bundles')->with('error', 'No bundle pending.');
+        }
+
+        $bundle = Bundle::with('requirements.category')
+            ->findOrFail($pendingBundle['id']);
+
+        foreach ($bundle->requirements as $req) {
+            $selected = $request->selections[$req->category_id] ?? [];
+
+            if (count($selected) != $req->required_quantity) {
+                return back()->with('error',
+                    "Select exactly {$req->required_quantity} items for {$req->category->name}");
+            }
+        }
+
+        // SAVE selections
+        $pendingBundle['selections'] = $request->selections;
+        session()->put('bundle', $pendingBundle);
+        session()->forget('pending_bundle');
+
+        return redirect()->route('user.cart')->with('success', 'Bundle customized!');
+    }
+
+    //BOOKINGS
     public function book()
     {
         $cart = session('cart', []);
@@ -168,6 +230,7 @@ class UserController extends Controller
         $selectedItems = collect();
         $total = 0;
         $bundle = null;
+        $delivSetup = 0;
 
         if ($cart) {
             $menuItems = MenuItem::whereIn('id', array_keys($cart))->get();
@@ -192,7 +255,37 @@ class UserController extends Controller
             $total = $bundle->price_per_head * $bundleData['quantity'];
         }
 
-        return view('user.book', compact('menuItems', 'cart', 'total', 'bundle', 'bundleData', 'selectedItems'));
+        if ($cart && !$bundleData) {
+            $totalQty = 0;
+
+            foreach ($cart as $item) {
+                $totalQty += $item['quantity'];
+            }
+
+            if ($totalQty <= 20) {
+                $delivSetup = 200;
+            } elseif ($totalQty <= 50) {
+                $delivSetup = 350;
+            } else {
+                $delivSetup = 500;
+            }
+        }
+
+        if ($bundleData) {
+            $guestCount = $bundleData['quantity'];
+
+            if ($guestCount <= 50) {
+                $delivSetup = 500;
+            } elseif ($guestCount <= 100) {
+                $delivSetup = 800;
+            } else {
+                $delivSetup = 1200;
+            }
+        }
+
+        session(['delivSetup' => $delivSetup]);
+
+        return view('user.book', compact('menuItems', 'cart', 'total', 'bundle', 'bundleData', 'selectedItems', 'delivSetup'));
     }
 
     public function storeBooking(Request $request)
@@ -207,6 +300,7 @@ class UserController extends Controller
         $cart = session('cart', []);
 
         $total = 0;
+        $delivSetup = session('delivSetup', 0);
 
 
         // CASE 1: BUNDLE
@@ -236,7 +330,7 @@ class UserController extends Controller
             'event_date' => $request->event_date,
             'guest_count' => $request->guest_count,
             'status' => 'pending',
-            'total_price' => $total,
+            'total_price' => $total + $delivSetup,
         ]);
 
         // SAVE ITEMS IF CUSTOM
@@ -273,6 +367,7 @@ class UserController extends Controller
         // CLEAR SESSION
         session()->forget('cart');
         session()->forget('bundle');
+        session()->forget('delivSetup');
 
         return redirect()->route('user.home')->with('success', 'Booking created!');
     }
@@ -320,37 +415,33 @@ class UserController extends Controller
         $booking->load(['user', 'bundle', 'items']); // load relationships
 
        $subtotal = 0;
-       $discColor = "red" ; 
 
         foreach ($booking->items as $item) {
             $subtotal += $item->price * $item->quantity;
         }
 
         $bundleTotal = null;
-        $discount = 0;
 
         if ($booking->bundle) {
             $bundleTotal = $booking->bundle->price_per_head * $booking->guest_count;
-            $discount = $subtotal - $bundleTotal;
+        }
 
-            if($discount < 0){ 
-                $discount *= -1 ;
-                $discColor = "green" ;
-            } else { 
-                $discColor = "red" ;
-            }
+        $delivSetup = 0 ;
+        if($booking->total_price > 0 && $booking->bundle){
+            $delivSetup = $booking->total_price - $bundleTotal ;
+        } else if($booking->total_price > 0 && !$booking->bundle){ 
+            $delivSetup = $booking->total_price - $subtotal ;
         }
 
         return view('user.booking_show', compact(
             'booking',
             'subtotal',
             'bundleTotal',
-            'discount', 
-            'discColor'
+            'delivSetup'
         ));
     }
 
-        //PROFILE
+    //PROFILE
     public function profile()
     {
         $bookings = Booking::where('user_id', auth()->id())
@@ -363,21 +454,29 @@ class UserController extends Controller
 
     public function updateProfile(Request $request)
     {
-
-        $request->validate([
-            'first_name' => 'required',
-            'last_name' => 'nullable|string',
-            'username' => 'required',
-            'password' => 'nullable|min:6',
-        ]);
-
         $user = auth()->user();
 
-        // combine name safely
-        $user->name = trim(
-            $request->first_name . 
-            ($request->last_name ? ' ' . $request->last_name : '')
-        );
+        $rules = [
+            'first_name' => 'required',
+            'last_name'  => 'required',
+            'username'   => 'required|unique:users,username,' . $user->id,
+        ];
+
+        $messages = [
+            'first_name.required' => 'First name is required.',
+            'last_name.required'  => 'Last name is required.',
+            'username.required'   => 'Username is required.',
+            'username.unique'     => 'Username is already taken.',
+        ];
+
+        if ($request->filled('password')) {
+            $rules['password'] = 'min:6';
+            $messages['password.min'] = 'Password must be at least 6 characters.';
+        }
+
+        $request->validate($rules, $messages);
+
+        $user->name     = trim($request->first_name . ' ' . $request->last_name);
         $user->username = $request->username;
 
         if ($request->filled('password')) {
@@ -391,41 +490,6 @@ class UserController extends Controller
 
 
 
-    public function customizeBundle()
-    {
-        $bundleData = session('bundle');
-
-        if (!$bundleData) {
-            return redirect()->route('user.bundles')->with('error', 'Select a bundle first.');
-        }
-
-        $bundle = Bundle::with('requirements.category.menuItems')
-            ->findOrFail($bundleData['id']);
-
-        return view('user.bundle_customize', compact('bundle', 'bundleData'));
-    }
-
-    public function saveBundleSelection(Request $request)
-    {
-        $bundleData = session('bundle');
-
-        $bundle = Bundle::with('requirements.category')
-            ->findOrFail($bundleData['id']);
-
-        foreach ($bundle->requirements as $req) {
-            $selected = $request->selections[$req->category_id] ?? [];
-
-            if (count($selected) != $req->required_quantity) {
-                return back()->with('error',
-                    "Select exactly {$req->required_quantity} items for {$req->category->name}");
-            }
-        }
-
-        // SAVE selections
-        $bundleData['selections'] = $request->selections;
-        session()->put('bundle', $bundleData);
-
-        return redirect()->route('user.book')->with('success', 'Bundle customized!');
-    }
+    
 
 }
