@@ -5,7 +5,7 @@
 @section('user_pages')
 
 <div class="w-[90%] lg:w-2/3 mx-auto lg:min-h-[100vh] lg:grid lg:grid-cols-2 lg:gap-6 pt-6 lg:pt-[6em]">
-    <div class="left bg-red-50 lg:w-[1/2] lg:h-[500px] w-full h-[400px]"></div> 
+    <div class="left bg-center bg-cover lg:w-[1/2] lg:h-[500px] w-full h-[400px]" style="background-image: url('{{ $bundle->image_url }}')"></div> 
 
     <div class="right lg:w-1/2 mt-4 lg:mt-0">
         <h1 class="font-medium text-[1.75em]">{{$bundle->name}}</h1> 

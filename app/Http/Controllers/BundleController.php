@@ -6,6 +6,8 @@ use App\Models\Bundle;
 use App\Models\BundleRequirement;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+
 
 class BundleController extends Controller
 {
@@ -23,14 +25,22 @@ class BundleController extends Controller
             'name' => 'required',
             'description' => 'required',
             'price_per_head' => 'required|numeric',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'requirements' => 'required|array'
         ]);
+
+        $imagePath = null;
+
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('bundles', 'public'); // 
+        }
 
         // Create bundle
         $bundle = Bundle::create([
             'name' => $request->name,
             'description' => $request->description,
             'price_per_head' => $request->price_per_head,
+            'image' => $imagePath,
         ]);
 
         // Save requirements
@@ -61,25 +71,40 @@ class BundleController extends Controller
             'name' => 'required',
             'description' => 'required',
             'price_per_head' => 'required|numeric',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'requirements' => 'required|array'
         ]);
+
+        $imagePath = $bundle->image;
+
+        if ($request->hasFile('image')) {
+
+            //  DELETE OLD IMAGE
+            if ($bundle->image && Storage::disk('public')->exists($bundle->image)) {
+                Storage::disk('public')->delete($bundle->image);
+            }
+
+            // SAVE NEW IMAGE
+            $imagePath = $request->file('image')->store('bundles', 'public');
+        }
 
         // Update bundle
         $bundle->update([
             'name' => $request->name,
             'description' => $request->description,
             'price_per_head' => $request->price_per_head,
+            'image' => $imagePath,
         ]);
 
         // Reset old requirements
         $bundle->requirements()->delete();
-
+        
         // Save new requirements
-        foreach ($request->requirements as $req) {
+        foreach ($request->requirements as $index => $categoryId) {
             BundleRequirement::create([
                 'bundle_id' => $bundle->id,
-                'category_id' => $req['category_id'],
-                'required_quantity' => $req['quantity'],
+                'category_id' => $categoryId,
+                'required_quantity' => $request->quantities[$index],
             ]);
         }
 
@@ -89,9 +114,7 @@ class BundleController extends Controller
     // DELETE BUNDLE
     public function destroy(Bundle $bundle)
     {
-        $bundle->requirements()->delete(); // delete child records
         $bundle->delete();
-
-        return redirect()->route('admin.bundles')->with('success', 'Bundle deleted');
+        return redirect()->route('admin.bundles')->with('success', 'Bundle archived');
     }
 }

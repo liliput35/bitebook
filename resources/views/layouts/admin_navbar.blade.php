@@ -9,7 +9,11 @@
         <a href="{{ route('admin.bookings') }}">Booking</a>
     </div> 
 
-    <a href=""><img src="{{asset('images/profile-icon.png')}}" alt=""></a>
+    <div class="flex items-center gap-3">
+        <a href="{{ route('admin.profile') }}"><img src="{{asset('images/profile-icon.png')}}" alt=""></a>
+        <a href="{{ route('logout') }}"><img src="{{asset('images/logout-icon.png')}}" alt="" class="w-[40px]"></a>
+    </div>
+    
 </div>
 </div>
 

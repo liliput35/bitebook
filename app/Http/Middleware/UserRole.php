@@ -13,8 +13,11 @@ class UserRole
     {
         $user = Auth::user();
 
-        if ($user->role !== 'user') {
-            // Optionally redirect admin to their dashboard
+        if (!auth()->check()) {
+            return redirect('/login');
+        }
+
+        if (auth()->user()->role !== 'user') {
             return redirect('/admin/dashboard');
         }
 

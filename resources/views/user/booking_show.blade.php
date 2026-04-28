@@ -1,8 +1,8 @@
-@extends('layouts.admin_pages')
+@extends('layouts.user_pages')
 
 @section('title', 'Booking Details')
 
-@section('admin_pages')
+@section('user_pages')
 
 <div class="w-[90%] mx-auto lg:min-h-[100vh]">
     
@@ -22,14 +22,11 @@
 
             <div class="mb-4">
                 <!-- Date -->
-                <div class="flex justify-between items-center">
+                <div>
                     <h1 class="text-[1.8em] text-dark-green font-medium lg:text-[2.5em]">
                         {{ \Carbon\Carbon::parse($booking->event_date)->format('gA | F j, Y') }}
                     </h1>
-
-                    <a href="{{ route('admin.bookings.edit', $booking->id) }}"><img src="{{asset('images/edit-icon.png')}}" alt=""></a>
-                </div> 
-
+                </div>
                 <!-- Customer -->
                 <div class="mt-2">
                     <p class="text-[1.25em] text-black font-medium lg:text-[2.5em]">
@@ -66,55 +63,55 @@
                 </p>
             </div>
 
-           <div class="mt-3">
+            <div class="mt-3">
                 @if($booking->bundle)
                     <p class="text-[1.25em] font-medium text-dark-green mb-2">{{ $booking->bundle->name }}</p>
                 @endif
 
                 @if($booking->items->count() > 0)
 
-                    <!-- ITEMS -->
-                    @foreach($booking->items as $item)
-                        @php
-                            $lineTotal = $item->price * $item->quantity;
-                        @endphp
+                <!-- ITEMS -->
+                @foreach($booking->items as $item)
+                    @php
+                        $lineTotal = $item->price * $item->quantity;
+                    @endphp
 
-                        <div class="flex justify-between text-[1.1em] mb-4 lg:mb-2">
-                            <p>{{ $item->menuItem->name ?? 'Item' }}</p>
-                            @if(!$booking->bundle)
-                                <p class="text-gray-500">₱{{ number_format($lineTotal, 2) }}</p>
-                            @endif
-                        </div>
-                    @endforeach
-
-                    <!-- DIVIDER -->
-                    <div class="border-t my-3"></div>
-
-                    <!-- SUBTOTAL -->
-                    <div class="flex text-light-gray justify-between text-[1.1em] mb-2">
-                        <p>Subtotal</p>
-                        @if($booking->bundle)
-                            <p>₱{{ number_format($bundleTotal, 2) }}</p>
-                        @else
-                            <p>₱{{ number_format($subtotal, 2) }}</p>
+                    <div class="flex justify-between text-[1.1em] mb-4 lg:mb-2">
+                        <p>{{ $item->menuItem->name ?? 'Item' }}</p>
+                        @if(!$booking->bundle)
+                            <p class="text-gray-500">₱{{ number_format($lineTotal, 2) }}</p>
                         @endif
                     </div>
+                @endforeach
 
-                    <!-- DELIVERY -->
-                    <div class="flex text-light-gray justify-between text-[1.1em] mb-2">
-                        <p>Delivery & Setup</p>
-                        <p>₱{{ number_format($delivSetup, 2) }}</p>
-                    </div>
+                <!-- DIVIDER -->
+                <div class="border-t my-3"></div>
 
-                    <!-- TOTAL -->
-                    <div class="flex justify-between text-[1.3em] font-bold mt-3">
-                        <p>Estimated Total</p>
-                        <p>₱{{ number_format($booking->total_price, 2) }}</p>
-                    </div>
+                <!-- SUBTOTAL -->
+                <div class="flex text-light-gray justify-between text-[1.1em] mb-2">
+                    <p>Subtotal</p>
+                    @if($booking->bundle)
+                        <p>₱{{ number_format($bundleTotal, 2) }}</p>
+                    @else
+                        <p>₱{{ number_format($subtotal, 2) }}</p>
+                    @endif
+                </div>
 
-                @else
-                    <p class="text-gray-500">No menu items selected.</p>
-                @endif
+                <!-- DELIVERY -->
+                <div class="flex text-light-gray justify-between text-[1.1em] mb-2">
+                    <p>Delivery & Setup</p>
+                    <p>₱{{ number_format($delivSetup, 2) }}</p>
+                </div>
+
+                <!-- TOTAL -->
+                <div class="flex justify-between text-[1.3em] font-bold mt-3">
+                    <p>Estimated Total</p>
+                    <p>₱{{ number_format($booking->total_price, 2) }}</p>
+                </div>
+
+            @else
+                <p class="text-gray-500">No menu items selected.</p>
+            @endif
 
             </div>
 
@@ -123,7 +120,7 @@
     </div>
 
     <div class="w-1/2 mx-auto lg:w-2/3 bg-white shadow-lg p-4 rounded-lg mt-6">
-        <form action="{{ route('inquiries.store') }}" method="POST" class="mt-6">
+        <form action="{{ route('user.inquiries.store') }}" method="POST" class="mt-6">
             @csrf
             <input type="hidden" name="booking_id" value="{{ $booking->id }}">
 

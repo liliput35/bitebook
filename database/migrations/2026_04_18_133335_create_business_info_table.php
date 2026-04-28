@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('bundles', function (Blueprint $table) {
+        Schema::create('business_info', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->text('description')->nullable();
-            $table->decimal('price_per_head', 10, 2);
-            $table->string('image')->nullable();
-            $table->softDeletes();
+
+            $table->string('company_name');
+            $table->string('contact_person');
+            $table->string('company_email');
+            $table->string('company_contact_number');
+            $table->string('location');
+
             $table->timestamps();
         });
     }
@@ -27,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('bundles');
+        Schema::dropIfExists('business_info');
     }
 };

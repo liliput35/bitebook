@@ -3,9 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 
 class MenuItem extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'name',
         'description',
@@ -24,5 +28,12 @@ class MenuItem extends Model
     public function bookingItems()
     {
         return $this->hasMany(BookingItem::class);
+    }
+
+    public function getImageUrlAttribute()
+    {
+        return $this->image
+            ? asset('storage/' . $this->image)
+            : asset('images/default.png'); // fallback
     }
 }
