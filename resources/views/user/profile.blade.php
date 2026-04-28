@@ -40,28 +40,39 @@
                         <div class="mb-2 lg:w-1/2">
                             <label class="font-medium text-light-gray">First Name</label><br>
                             <input disabled class="input-field border border-light-gray rounded-lg w-full p-2" type="text" name="first_name" value="{{ $parts[0] ?? '' }}">
-                            @error('name') <span>{{ $message }}</span> @enderror
                         </div>
                         
                         <div class="mb-2 lg:w-1/2">
                             <label class="font-medium text-light-gray">Last Name</label><br>
                             <input disabled class="input-field border border-light-gray rounded-lg p-2 lg:w-full" type="text" name="last_name" value="{{ $parts[1] ?? '' }}">
-                            @error('price') <span>{{ $message }}</span> @enderror
                         </div> 
                     </div>
 
                     <div class="mb-2 lg:w-1/2">
                         <label class="font-medium text-light-gray">Username</label><br>
                         <input disabled class="input-field border border-light-gray rounded-lg p-2 lg:w-full" type="text" name="username" value="{{ auth()->user()->username}}">
-                        @error('price') <span>{{ $message }}</span> @enderror
                     </div>           
                     
                     <div class="mb-2 lg:w-1/2">
                         <label class="font-medium text-light-gray">Password</label><br>
                         <input disabled class="input-field border border-light-gray rounded-lg p-2 lg:w-full" type="password" name="password" value="******">
-                        @error('price') <span>{{ $message }}</span> @enderror
                     </div>                    
-                
+
+                    {{-- SUCCESS --}}
+                    @if (session('success'))
+                        <div class="bg-green-100 text-green-700 px-3 py-2 rounded mb-4 border border-green-400">
+                            <p>{{ session('success') }}</p>
+                        </div>
+                    @endif
+
+                    {{-- ERRORS --}}
+                    @if ($errors->any())
+                        <div class="bg-red-100 text-red-700 px-3 py-2 rounded mb-4 border border-red-400">
+                            @foreach ($errors->all() as $error)
+                                <p>{{ $error }}</p>
+                            @endforeach
+                        </div>
+                    @endif
                 </div>
                 
                 {{-- ORDER HISTORY CARD --}}
@@ -82,23 +93,9 @@
                                 </p>
                             </div>
 
-                            @php
-                                $deliveryFee = 500;
-                                $total = 0 + $deliveryFee;
-
-                                foreach ($booking->items as $item) {
-                                    $total += $item->price * $item->quantity;
-                                }
-
-                                if ($booking->bundle) {
-                                    $total = $booking->bundle->price_per_head * $booking->guest_count + 500 ;
-                                }
-
-                            @endphp
-
                             <div class="text-right">
                                 <p class="font-medium text-dark-green">
-                                    ₱ {{ number_format($total, 2) }}
+                                    ₱ {{ number_format($booking->total_price, 2) }}
                                 </p>
                             </div>
                         </div>

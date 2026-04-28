@@ -47,6 +47,13 @@ class AuthController extends Controller
             'lastname' => 'required',
             'username' => 'required|unique:users',
             'password' => 'required|min:6',
+        ], [
+            'username.unique' => 'Username is already taken.',
+            'password.min' => 'Password must be at least 6 characters.',
+            'firstname.required' => 'First name is required.',
+            'lastname.required' => 'Last name is required.',
+            'username.required' => 'Username is required.',
+            'password.required' => 'Password is required.',
         ]);
 
         $user = User::create([

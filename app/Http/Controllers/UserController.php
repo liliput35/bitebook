@@ -454,21 +454,29 @@ class UserController extends Controller
 
     public function updateProfile(Request $request)
     {
-
-        $request->validate([
-            'first_name' => 'required',
-            'last_name' => 'nullable|string',
-            'username' => 'required',
-            'password' => 'nullable|min:6',
-        ]);
-
         $user = auth()->user();
 
-        // combine name safely
-        $user->name = trim(
-            $request->first_name . 
-            ($request->last_name ? ' ' . $request->last_name : '')
-        );
+        $rules = [
+            'first_name' => 'required',
+            'last_name'  => 'required',
+            'username'   => 'required|unique:users,username,' . $user->id,
+        ];
+
+        $messages = [
+            'first_name.required' => 'First name is required.',
+            'last_name.required'  => 'Last name is required.',
+            'username.required'   => 'Username is required.',
+            'username.unique'     => 'Username is already taken.',
+        ];
+
+        if ($request->filled('password')) {
+            $rules['password'] = 'min:6';
+            $messages['password.min'] = 'Password must be at least 6 characters.';
+        }
+
+        $request->validate($rules, $messages);
+
+        $user->name     = trim($request->first_name . ' ' . $request->last_name);
         $user->username = $request->username;
 
         if ($request->filled('password')) {
