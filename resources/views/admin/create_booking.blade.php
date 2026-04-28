@@ -28,6 +28,36 @@
 
         <!-- BOOKING DETAILS -->
         <div class="bg-white shadow p-4 rounded mt-4">
+            <input type="hidden" name="user_id" id="user_id_input">
+
+            <div class="relative mb-2">
+                <input
+                    type="text"
+                    id="customer_search"
+                    placeholder="Search customer name..."
+                    autocomplete="off"
+                    class="border p-2 w-full"
+                    oninput="filterUsers(this.value)"
+                    onfocus="showDropdown()"
+                >
+
+                <ul id="user_dropdown"
+                    class="absolute z-50 bg-white border w-full max-h-48 overflow-y-auto hidden shadow-md rounded">
+                    @foreach($users as $user)
+                        <li
+                            class="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                            data-id="{{ $user->id }}"
+                            data-name="{{ $user->name }}"
+                            onclick="selectUser(this)">
+                            {{ $user->name }} <span class="text-gray-400 text-sm">({{ $user->username }})</span>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+
+            @error('user_id')
+                <span class="text-red-600 text-sm">{{ $message }}</span>
+            @enderror
             <input type="text" name="event_type" placeholder="Event Type" class="border p-2 w-full mb-2">
             <input type="date" name="event_date" class="border p-2 w-full mb-2" min="{{ date('Y-m-d') }}" value="{{ date('Y-m-d') }}">
             <input type="number" name="guest_count" id="guest_count" placeholder="Guest Count" class="border p-2 w-full mb-2" min="1">
@@ -102,5 +132,41 @@
     </form>
 
 </div>
+
+<script>
+    function showDropdown() {
+        document.getElementById('user_dropdown').classList.remove('hidden');
+    }
+
+    function filterUsers(query) {
+        const items = document.querySelectorAll('#user_dropdown li');
+        const q = query.toLowerCase();
+
+        items.forEach(item => {
+            const name = item.dataset.name.toLowerCase();
+            item.style.display = name.includes(q) ? '' : 'none';
+        });
+
+        document.getElementById('user_dropdown').classList.remove('hidden');
+
+        // clear selection if user is typing again
+        document.getElementById('user_id_input').value = '';
+    }
+
+    function selectUser(el) {
+        document.getElementById('customer_search').value = el.dataset.name;
+        document.getElementById('user_id_input').value = el.dataset.id;
+        document.getElementById('user_dropdown').classList.add('hidden');
+    }
+
+    // close dropdown when clicking outside
+    document.addEventListener('click', function (e) {
+        const wrapper = document.getElementById('user_dropdown');
+        const input = document.getElementById('customer_search');
+        if (!wrapper.contains(e.target) && e.target !== input) {
+            wrapper.classList.add('hidden');
+        }
+    });
+</script>
 
 @endsection

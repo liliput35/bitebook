@@ -11,6 +11,7 @@ use App\Models\Bundle;
 use App\Models\Inquiry;
 use App\Models\BookingItem;
 use App\Models\BusinessInfo;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -61,7 +62,7 @@ class AdminController extends Controller
 
         //RECENT INQUIRIES 
         $recentInquiries = Inquiry::with(['booking', 'sender'])
-            ->whereNull('parent_id') // 👈 THIS LINE FIXES IT
+            ->whereNull('parent_id') 
             ->latest()
             ->take(5)
             ->get();
@@ -404,18 +405,23 @@ class AdminController extends Controller
     public function createBooking()
     {
         $menuItems = MenuItem::all();
+        $users = User::where('role', 'user')->get();
         $bundles = Bundle::with('requirements.category.menuItems')->get();
 
-        return view('admin.create_booking', compact('menuItems', 'bundles'));
+        return view('admin.create_booking', compact('menuItems', 'bundles', 'users'));
     }
 
     public function storeBooking(Request $request)
     {
         $request->validate([
+            'user_id' => 'required|exists:users,id',
             'event_type' => 'required',
             'event_date' => 'required|date',
             'guest_count' => 'required|integer|min:1',
             'venue' => 'required|string|max:255',
+        ], [
+            'user_id.required' => 'Please select a customer.',
+            'user_id.exists'   => 'Selected customer is invalid.',
         ]);
 
         $total = 0;
@@ -454,7 +460,7 @@ class AdminController extends Controller
             } 
 
             $booking = Booking::create([
-                'user_id' => null, // or assign later
+                'user_id' => $request->user_id,
                 'bundle_id' => $bundle->id,
                 'event_type' => $request->event_type,
                 'venue' => $request->venue,
@@ -501,7 +507,7 @@ class AdminController extends Controller
             }
 
             $booking = Booking::create([
-                'user_id' => 1,
+                'user_id' => $request->user_id,
                 'bundle_id' => null,
                 'event_type' => $request->event_type,
                 'venue' => $request->venue,
