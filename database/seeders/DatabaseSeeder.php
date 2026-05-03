@@ -212,7 +212,7 @@ class DatabaseSeeder extends Seeder
             $bundleBooking = Booking::create([
                 'user_id' => $user->id,
                 'event_type' => 'Wedding Reception',
-                'event_date' => Carbon::now()->addDays(rand(1, 20)),
+                'event_date' => Carbon::now()->addDays(rand(1, 7)),
                 'venue' => 'Hall A',
                 'guest_count' => $guestCount,
                 'status' => 'pending',
@@ -255,7 +255,7 @@ class DatabaseSeeder extends Seeder
             $customBooking = Booking::create([
                 'user_id' => $user->id,
                 'event_type' => 'Birthday Party',
-                'event_date' => Carbon::now()->addDays(rand(5, 25)),
+                'event_date' => Carbon::now()->addDays(rand(1, 20)),
                 'venue' => 'Garden',
                 'guest_count' => rand(10, 50),
                 'status' => 'confirmed',

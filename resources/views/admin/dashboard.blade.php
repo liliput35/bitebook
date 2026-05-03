@@ -24,7 +24,7 @@
         <div class="mb-6 w-full flex items-center gap-3 lg:bg-white lg:shadow-lg lg:p-4 lg:rounded-lg lg:flex-col lg:items-start lg:gap-[5em]">
             <div class="desktop-icon-grp lg:flex lg:justify-between lg:w-full">
                 <img src="{{asset('images/revenue-icon.png')}}" alt="" class="max-w-[30px]">
-                <p class="font-medium text-light-green hidden lg:block">+12%</p>
+                <p class="font-medium text-light-green hidden lg:block"></p>
 
             </div>
 
@@ -165,7 +165,7 @@
                                     </td>
 
                                     <td class="hidden lg:table-cell px-4 py-4 text-left">
-                                        <a href=""><img src="{{asset('images/view-icon.png')}}" class="max-w-[25px]" alt="View"></a>
+                                        <a href="{{ route('admin.inquiries', $inquiry->id) }}"><img src="{{asset('images/view-icon.png')}}" class="max-w-[25px]" alt="View"></a>
                                     </td>
                                 </tr>
                             @endforeach
